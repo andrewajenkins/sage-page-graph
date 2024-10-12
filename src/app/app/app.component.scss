@@ -4,22 +4,23 @@
 }
 
 mat-sidenav {
-  min-width: 10%;
-  max-width: 30%;
-  width: 10%;
-  resize: horizontal;
+  min-width: 15%;
+  width: 15%;
   overflow: auto;
 }
 
 mat-sidenav-content {
   flex: 1;
-  padding: 20px;
   display: flex;
   flex-direction: column;
 }
 
+.as-split {
+  height: 100%;
+}
+
 .app-chat {
-  flex: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }

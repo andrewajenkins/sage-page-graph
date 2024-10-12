@@ -1,21 +1,23 @@
-<!-- <mat-sidenav-container class="example-container">
-  <mat-sidenav mode="side" opened>
-    <mat-nav-list>
-      <app-graph></app-graph>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-chat></app-chat>
-  </mat-sidenav-content>
-</mat-sidenav-container> -->
-
 <mat-sidenav-container class="example-container">
   <mat-sidenav mode="side" opened>
+    <h3>Sage Page App</h3>
     <mat-nav-list>
-      <app-graph [graphData]="graphData"></app-graph>
+      <a
+        mat-list-item
+        *ngFor="let conversation of graphData"
+        (click)="selectConversation(conversation)"
+        >{{ conversation.title }}</a
+      >
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-chat class="app-chat" [chatHistory]="chatHistory"></app-chat>
+    <as-split [direction]="'horizontal'" [gutterSize]="10" [unit]="'percent'">
+      <as-split-area [size]="50">
+        <app-graph [item]="selectedConversation"></app-graph>
+      </as-split-area>
+      <as-split-area [size]="50">
+        <app-chat class="app-chat" [chatHistory]="chatHistory"></app-chat>
+      </as-split-area>
+    </as-split>
   </mat-sidenav-content>
 </mat-sidenav-container>
