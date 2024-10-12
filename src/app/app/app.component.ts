@@ -35,7 +35,6 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.graphData = this.sharedDataService.getData();
-    console.log(JSON.stringify(this.graphData, null, 2));
     this.conversations = this.preprocessData(this.graphData);
     this.chatHistory = this.findPath(
       this.graphData,
@@ -51,7 +50,12 @@ export class AppComponent {
     for (const item of data) {
       const newPath = [
         ...path,
-        { title: item.title, query: item.query, response: item.response },
+        {
+          title: item.title,
+          query: item.query,
+          response: item.response,
+          queries: item.queries,
+        },
       ];
       if (item.query === targetQuery) {
         return newPath;
@@ -63,8 +67,13 @@ export class AppComponent {
     }
     return [];
   }
+
   selectConversation(conversation: any): void {
     this.selectedConversation = conversation;
     this.chatHistory = this.findPath(this.graphData, conversation.query);
+  }
+
+  onNodeSelect(node: any): void {
+    this.chatHistory = this.findPath(this.graphData, node.query);
   }
 }

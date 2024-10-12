@@ -1,11 +1,14 @@
-<mat-card class="graph-container">
-  <mat-card-content>
-    <h3>{{ item.title }}</h3>
-    <div *ngFor="let subItem of item.queries" class="sub-item">
-      <h4>{{ subItem.title }}</h4>
-      <div *ngFor="let subSubItem of subItem.queries" class="sub-sub-item">
-        <h5>{{ subSubItem.title }}</h5>
-      </div>
-    </div>
-  </mat-card-content>
-</mat-card>
+<p-tree
+  [value]="treeData"
+  selectionMode="single"
+  [(selection)]="selectedNode"
+  class="w-full md:w-30rem"
+  draggableNodes="true"
+  (onNodeSelect)="onNodeSelect($event)"
+>
+  <ng-template let-node pTemplate="default">
+    <span pTooltip="{{ node.data.response }}" tooltipPosition="top">
+      {{ node.label }}
+    </span>
+  </ng-template>
+</p-tree>

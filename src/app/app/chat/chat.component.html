@@ -1,5 +1,28 @@
-<p>chat works!</p>
-<div *ngFor="let item of chatHistory">
-  <h3>{{ item.query }}</h3>
-  <p>{{ item.response }}</p>
+<div class="chat-container">
+  <div class="dropdown-container">
+    <mat-form-field appearance="fill" class="dropdown">
+      <mat-label>Select LLM Machine</mat-label>
+      <mat-select [(value)]="selectedMachine">
+        <mat-option *ngFor="let machine of machines" [value]="machine">
+          {{ machine }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="chat-history">
+    <markdown
+      *ngFor="let item of chatHistory"
+      [data]="formatChatItem(item)"
+    ></markdown>
+  </div>
+  <div class="input-container">
+    <textarea
+      matInput
+      placeholder="Enter your query"
+      [(ngModel)]="query"
+    ></textarea>
+    <button mat-raised-button color="primary" (click)="sendQuery()">
+      Send
+    </button>
+  </div>
 </div>

@@ -23,3 +23,15 @@ mat-sidenav-content {
   display: flex;
   flex-direction: column;
 }
+:host ::ng-deep .p-tree .p-tree-container {
+  height: 100%;
+}
+
+:host ::ng-deep .p-tree .p-treenode-content {
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-tooltip {
+  max-width: 300px;
+  white-space: pre-wrap;
+}

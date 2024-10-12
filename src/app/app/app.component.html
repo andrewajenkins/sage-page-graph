@@ -13,7 +13,10 @@
   <mat-sidenav-content>
     <as-split [direction]="'horizontal'" [gutterSize]="10" [unit]="'percent'">
       <as-split-area [size]="50">
-        <app-graph [item]="selectedConversation"></app-graph>
+        <app-graph
+          [item]="selectedConversation"
+          (nodeSelect)="onNodeSelect($event)"
+        ></app-graph>
       </as-split-area>
       <as-split-area [size]="50">
         <app-chat class="app-chat" [chatHistory]="chatHistory"></app-chat>
