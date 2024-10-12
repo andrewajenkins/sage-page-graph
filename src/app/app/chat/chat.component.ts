@@ -48,6 +48,9 @@ export class ChatComponent {
   }
   onSubQueryClick(parentIndex: number, index: number): void {
     const subQuery = this.chatHistory[parentIndex].queries[index];
+    const newChatHistory = this.chatHistory.slice(0, parentIndex + 1);
+    newChatHistory.push(subQuery); // Add the selected sub-query to the path
+    this.chatHistory = newChatHistory;
     this.subQuerySelect.emit(subQuery);
   }
   sendQuery(): void {
