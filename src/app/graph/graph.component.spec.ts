@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatGraphComponent } from './chat-graph.component';
+import { GraphComponent } from './graph.component';
 
-describe('ChatGraphComponent', () => {
-  let component: ChatGraphComponent;
-  let fixture: ComponentFixture<ChatGraphComponent>;
+describe('GraphComponent', () => {
+  let component: GraphComponent;
+  let fixture: ComponentFixture<GraphComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatGraphComponent]
+      imports: [GraphComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ChatGraphComponent);
+    fixture = TestBed.createComponent(GraphComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

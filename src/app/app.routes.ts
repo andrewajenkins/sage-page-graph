@@ -1,9 +1,16 @@
 import { Routes } from '@angular/router';
-import { ChatGraphComponent } from './chat-graph/chat-graph.component';
-import { ChatWindowComponent } from './chat-window/chat-window.component';
+import { LoginComponent } from './login/login.component';
+import { AppComponent } from './app/app.component';
+import { StoreComponent } from './store/store.component';
+import { InfoComponent } from './info/info.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const routes: Routes = [
-    { path: 'chat-graph', component: ChatGraphComponent },
-    { path: 'chat-window', component: ChatWindowComponent},
-    { path: '', redirectTo: '/chat-window', pathMatch: 'full' }
+  { path: 'login', component: LoginComponent },
+  { path: 'store', component: StoreComponent },
+  { path: 'info', component: InfoComponent },
+  { path: 'settings', component: SettingsComponent },
+  { path: 'app', component: AppComponent },
+  { path: '', redirectTo: 'app', pathMatch: 'full' },
+  { path: '**', redirectTo: 'app' },
 ];

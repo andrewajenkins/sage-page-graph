@@ -1,0 +1,17 @@
+.example-container {
+  height: 100%;
+  display: flex;
+}
+
+mat-sidenav {
+  min-width: 10%;
+  max-width: 30%;
+  width: 10%;
+  resize: horizontal;
+  overflow: auto;
+}
+
+mat-sidenav-content {
+  flex: 1;
+  padding: 20px;
+}
