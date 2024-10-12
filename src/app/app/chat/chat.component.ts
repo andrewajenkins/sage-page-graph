@@ -14,6 +14,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { OpenAIService } from '../services/openai.service';
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -36,11 +37,13 @@ export class ChatComponent {
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
   selectedMachine = this.machines[0];
   query!: string | null;
+  pendingResponse: any = null;
 
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
     private cdr: ChangeDetectorRef,
+    private openAIService: OpenAIService,
   ) {}
 
   formatQueryResponse(item: any): string {
@@ -54,7 +57,49 @@ export class ChatComponent {
     this.subQuerySelect.emit(subQuery);
   }
   sendQuery(): void {
-    // Handle sending the query
-    console.log('Query sent:', this.query);
+    if (!this.query) return;
+
+    const newQuery = {
+      query: this.query,
+      response: '',
+      queries: [],
+      title: '', // Add title field
+    };
+
+    this.openAIService.sendQuery(this.query).subscribe((response) => {
+      console.log('response', response);
+      newQuery.response = response.choices[0].message.content;
+      const summaryPrompt = `Summarize the following query and response in 3-5 words:\nQuery: ${newQuery.query}\nResponse: ${newQuery.response}`;
+      this.openAIService
+        .generateSummary(summaryPrompt)
+        .subscribe((summaryResponse) => {
+          newQuery.title = summaryResponse.choices[0].message.content.trim(); // Use summary response as title
+          this.pendingResponse = newQuery;
+        });
+    });
+
+    this.query = null;
+  }
+  generateSummary(query: string, response: string): string {
+    // Simple heuristic to generate a summary
+    const queryWords = query.split(' ').slice(0, 3).join(' ');
+    const responseWords = response.split(' ').slice(0, 3).join(' ');
+    return `${queryWords} / ${responseWords}`;
+  }
+  approveResponse(): void {
+    if (this.pendingResponse) {
+      if (this.chatHistory.length === 0) {
+        this.chatHistory.push(this.pendingResponse);
+      } else {
+        this.chatHistory[this.chatHistory.length - 1].queries.push(
+          this.pendingResponse,
+        );
+      }
+      this.pendingResponse = null;
+    }
+  }
+
+  deleteResponse(): void {
+    this.pendingResponse = null;
   }
 }

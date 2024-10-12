@@ -22,6 +22,15 @@
       </div>
     </div>
   </div>
+  <div *ngIf="pendingResponse" class="pending-response">
+    <markdown [data]="formatQueryResponse(pendingResponse)"></markdown>
+    <button mat-raised-button color="primary" (click)="approveResponse()">
+      Approve
+    </button>
+    <button mat-raised-button color="warn" (click)="deleteResponse()">
+      Delete
+    </button>
+  </div>
   <div class="input-container">
     <textarea
       matInput
