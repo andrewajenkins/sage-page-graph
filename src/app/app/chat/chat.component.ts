@@ -1,4 +1,12 @@
-import { Component, Input } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  Renderer2,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -23,21 +31,25 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class ChatComponent {
   @Input() chatHistory: any;
+  @Output() subQuerySelect = new EventEmitter<any>();
+
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
   selectedMachine = this.machines[0];
   query!: string | null;
 
-  formatChatItem(item: any): string {
-    let formatted = `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
-    if (item.queries && item.queries.length > 0) {
-      formatted += '**Sub-queries:**\n';
-      item.queries.forEach((subQuery: any) => {
-        formatted += `- [${subQuery.title}](#)\n`;
-      });
-    }
-    return formatted;
-  }
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
+  formatQueryResponse(item: any): string {
+    return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
+  }
+  onSubQueryClick(parentIndex: number, index: number): void {
+    const subQuery = this.chatHistory[parentIndex].queries[index];
+    this.subQuerySelect.emit(subQuery);
+  }
   sendQuery(): void {
     // Handle sending the query
     console.log('Query sent:', this.query);

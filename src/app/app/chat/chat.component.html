@@ -10,10 +10,17 @@
     </mat-form-field>
   </div>
   <div class="chat-history">
-    <markdown
-      *ngFor="let item of chatHistory"
-      [data]="formatChatItem(item)"
-    ></markdown>
+    <div *ngFor="let item of chatHistory; let i = index">
+      <markdown [data]="formatQueryResponse(item)"></markdown>
+      <div *ngIf="item.queries && item.queries.length > 0">
+        <p><strong>Sub-queries:</strong></p>
+        <div *ngFor="let subQuery of item.queries; let j = index">
+          <button mat-button (click)="onSubQueryClick(i, j)">
+            {{ subQuery.title }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="input-container">
     <textarea

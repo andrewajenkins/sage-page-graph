@@ -67,7 +67,11 @@ export class AppComponent {
     }
     return [];
   }
-
+  onSubQuerySelect(subQuery: any): void {
+    // Handle the sub-query selection
+    console.log('Sub-query selected:', subQuery);
+    // Update the chat history path or perform any other necessary actions
+  }
   selectConversation(conversation: any): void {
     this.selectedConversation = conversation;
     this.chatHistory = this.findPath(this.graphData, conversation.query);

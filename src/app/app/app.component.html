@@ -19,7 +19,11 @@
         ></app-graph>
       </as-split-area>
       <as-split-area [size]="50">
-        <app-chat class="app-chat" [chatHistory]="chatHistory"></app-chat>
+        <app-chat
+          class="app-chat"
+          [chatHistory]="chatHistory"
+          (subQuerySelect)="onSubQuerySelect($event)"
+        ></app-chat>
       </as-split-area>
     </as-split>
   </mat-sidenav-content>
