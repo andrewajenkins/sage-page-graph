@@ -1,12 +1,21 @@
-<mat-sidenav-container class="example-container">
-  <mat-sidenav mode="side" opened [style.flex]="sidebarFlex">
+<!-- <mat-sidenav-container class="example-container">
+  <mat-sidenav mode="side" opened>
     <mat-nav-list>
-      <a mat-list-item *ngFor="let conversation of conversations">{{
-        conversation
-      }}</a>
+      <app-graph></app-graph>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <app-chat></app-chat>
+  </mat-sidenav-content>
+</mat-sidenav-container> -->
+
+<mat-sidenav-container class="example-container">
+  <mat-sidenav mode="side" opened>
+    <mat-nav-list>
+      <app-graph [graphData]="graphData"></app-graph>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-chat class="app-chat" [chatHistory]="chatHistory"></app-chat>
   </mat-sidenav-content>
 </mat-sidenav-container>

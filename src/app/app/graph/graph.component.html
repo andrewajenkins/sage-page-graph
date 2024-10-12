@@ -1,0 +1,10 @@
+<p>graph works!</p>
+<div *ngFor="let item of graphData">
+  <h3>{{ item.title }}</h3>
+  <div *ngFor="let subItem of item.queries" style="margin-left: 20px">
+    <h4>{{ subItem.title }}</h4>
+    <div *ngFor="let subSubItem of subItem.queries" style="margin-left: 20px">
+      <h5>{{ subSubItem.title }}</h5>
+    </div>
+  </div>
+</div>
