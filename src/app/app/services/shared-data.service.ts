@@ -4,7 +4,13 @@ import { EventEmitter, Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SharedDataService {
-  private currentPath: number[] = []; // list of number indexes that traverse the sets of queries in a path
+  private _currentPath: number[] = [];
+  get currentPath(): number[] {
+    return this._currentPath;
+  }
+  set currentPath(value: number[]) {
+    this._currentPath = value;
+  }
   queryAppended = new EventEmitter<void>();
 
   private data = [
@@ -271,7 +277,7 @@ export class SharedDataService {
     const currentQueriesList = this.getCurrentQueriesList();
     console.log('Current queries list:', currentQueriesList);
     currentQueriesList.push(query);
-    this.currentPath.push(currentQueriesList.length - 1);
+    this.appendCurrentPath(currentQueriesList.length - 1);
     this.queryAppended.emit();
   }
 
@@ -280,7 +286,13 @@ export class SharedDataService {
   }
 
   getCurrentPath(): number[] {
+    console.log('Getting current path:', this.currentPath);
     return this.currentPath;
+  }
+
+  appendCurrentPath(index: number): void {
+    console.log('Appending current path:', this.currentPath);
+    this.currentPath.push(index);
   }
 
   initializeDeepestConversation(): any[] {

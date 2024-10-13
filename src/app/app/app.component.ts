@@ -22,7 +22,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  selectedConversation: any;
+  _selectedConversation: any;
+  set selectedConversation(value: any) {
+    this._selectedConversation = { ...value };
+  }
+  get selectedConversation(): any {
+    return this._selectedConversation;
+  }
   title = 'my-app';
   sidebarFlex = '0 0 10%';
   graphData: any;
@@ -93,19 +99,6 @@ export class AppComponent {
     this.chatHistory = this.findPath(this.graphData, node.query);
     this.initialPath = this.sharedDataService.getCurrentPath();
   }
-
-  // acceptNewAnswer(newAnswer: any): void {
-  //   const newConversation = {
-  //     title: newAnswer.title,
-  //     query: newAnswer.query,
-  //     response: newAnswer.response,
-  //     queries: [],
-  //   };
-  //   this.graphData.push(newConversation);
-  //   this.selectedConversation = newConversation;
-  //   this.chatHistory = [newConversation];
-  //   this.initialPath = [this.graphData.length - 1]; // Set the initial path to the new conversation
-  // }
 
   addNewConversation(): void {
     this.selectedConversation = null; // Unselect everything

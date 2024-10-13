@@ -64,8 +64,6 @@ export class GraphComponent {
     if (changes['item'] && this.item) {
       console.log('Item changed');
       this.initData();
-    } else {
-      this.treeData = [];
     }
   }
 

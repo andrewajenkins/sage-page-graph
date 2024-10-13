@@ -55,10 +55,11 @@ export class ChatComponent {
         newChatHistory.push(subQuery); // Add the selected sub-query to the path
         this.chatHistory = newChatHistory;
         this.subQuerySelect.emit(subQuery);
-        this.dataService.selectNode([
-          ...this.dataService.getCurrentPath(),
+        const newPath = [
+          ...this.dataService.getCurrentPath().slice(0, parentIndex + 1),
           index,
-        ]); // Update current path
+        ];
+        this.dataService.selectNode(newPath); // Update current path
       }
     }
   }
