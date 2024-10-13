@@ -31,3 +31,16 @@ textarea {
   flex: 1;
   margin-right: 10px;
 }
+button.mat-button {
+  margin: 4px 0;
+  background-color: #e0f7fa;
+  color: #00796b;
+  border: 1px solid #00796b;
+  border-radius: 4px;
+  padding: 8px 16px;
+  text-transform: none;
+}
+
+button.mat-button:hover {
+  background-color: #b2ebf2;
+}

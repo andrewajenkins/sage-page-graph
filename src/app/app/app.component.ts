@@ -36,10 +36,7 @@ export class AppComponent {
   ngOnInit(): void {
     this.graphData = this.sharedDataService.getData();
     this.conversations = this.preprocessData(this.graphData);
-    this.chatHistory = this.findPath(
-      this.graphData,
-      'Explain unsupervised learning',
-    );
+    this.chatHistory = this.sharedDataService.initializeDeepestConversation();
   }
 
   preprocessData(data: any): any {

@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SharedDataService {
+  private currentPath: number[] = [];
   private data = [
     {
       title: 'Double-Slit Experiment',
@@ -263,5 +264,51 @@ export class SharedDataService {
 
   getData() {
     return this.data;
+  }
+
+  getChatHistory(): any[] {
+    let node = this.data;
+    const chatHistory = [];
+    for (const index of this.currentPath) {
+      chatHistory.push(node[index]);
+      node = node[index].queries;
+    }
+    return chatHistory;
+  }
+
+  getCurrentNode(): any {
+    let node = this.data;
+    for (const index of this.currentPath) {
+      node = node[index].queries;
+    }
+    return node;
+  }
+
+  appendQuery(query: any): void {
+    const currentNode = this.getCurrentNode();
+    currentNode.push(query);
+  }
+
+  selectNode(path: number[]): void {
+    this.currentPath = path;
+  }
+
+  getCurrentPath(): number[] {
+    return this.currentPath;
+  }
+
+  initializeDeepestConversation(): any[] {
+    let node = this.data[0];
+    const path = [0];
+    const chatHistory = [node];
+
+    while (node.queries && node.queries.length > 0) {
+      node = node.queries[0];
+      path.push(0);
+      chatHistory.push(node);
+    }
+
+    this.currentPath = path;
+    return chatHistory;
   }
 }

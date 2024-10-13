@@ -1,12 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  Renderer2,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -15,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenAIService } from '../services/openai.service';
+import { SharedDataService } from '../services/shared-data.service';
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -40,21 +33,30 @@ export class ChatComponent {
   pendingResponse: any = null;
 
   constructor(
-    private renderer: Renderer2,
-    private el: ElementRef,
-    private cdr: ChangeDetectorRef,
     private openAIService: OpenAIService,
+    private dataService: SharedDataService, // Inject DataService
   ) {}
 
   formatQueryResponse(item: any): string {
     return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
   }
   onSubQueryClick(parentIndex: number, index: number): void {
-    const subQuery = this.chatHistory[parentIndex].queries[index];
-    const newChatHistory = this.chatHistory.slice(0, parentIndex + 1);
-    newChatHistory.push(subQuery); // Add the selected sub-query to the path
-    this.chatHistory = newChatHistory;
-    this.subQuerySelect.emit(subQuery);
+    if (
+      this.chatHistory[parentIndex] &&
+      this.chatHistory[parentIndex].queries
+    ) {
+      const subQuery = this.chatHistory[parentIndex].queries[index];
+      if (subQuery) {
+        const newChatHistory = this.chatHistory.slice(0, parentIndex + 1);
+        newChatHistory.push(subQuery); // Add the selected sub-query to the path
+        this.chatHistory = newChatHistory;
+        this.subQuerySelect.emit(subQuery);
+        this.dataService.selectNode([
+          ...this.dataService.getCurrentPath(),
+          index,
+        ]); // Update current path
+      }
+    }
   }
   sendQuery(): void {
     if (!this.query) return;
@@ -80,21 +82,14 @@ export class ChatComponent {
 
     this.query = null;
   }
-  generateSummary(query: string, response: string): string {
-    // Simple heuristic to generate a summary
-    const queryWords = query.split(' ').slice(0, 3).join(' ');
-    const responseWords = response.split(' ').slice(0, 3).join(' ');
-    return `${queryWords} / ${responseWords}`;
-  }
   approveResponse(): void {
     if (this.pendingResponse) {
-      if (this.chatHistory.length === 0) {
-        this.chatHistory.push(this.pendingResponse);
-      } else {
-        this.chatHistory[this.chatHistory.length - 1].queries.push(
-          this.pendingResponse,
-        );
-      }
+      this.dataService.appendQuery(this.pendingResponse); // Append to data service
+      this.chatHistory = this.dataService.getChatHistory(); // Update chat history
+      this.onSubQueryClick(
+        this.dataService.getCurrentPath().length - 1,
+        this.dataService.getCurrentNode().length - 1,
+      ); // Select the new node
       this.pendingResponse = null;
     }
   }
