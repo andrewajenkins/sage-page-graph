@@ -6,6 +6,15 @@ import { GraphComponent } from './graph/graph.component';
 import { SharedDataService } from './services/shared-data.service';
 import { AngularSplitModule } from 'angular-split';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button'; // Import MatButtonModule
+
+export interface Conversation {
+  title: string;
+  query: string;
+  response: string;
+  queries: Conversation[];
+}
 
 @Component({
   selector: 'app-app',
@@ -17,25 +26,21 @@ import { CommonModule } from '@angular/common';
     GraphComponent,
     AngularSplitModule,
     CommonModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  _selectedConversation: any;
-  set selectedConversation(value: any) {
-    this._selectedConversation = { ...value };
-  }
-  get selectedConversation(): any {
-    return this._selectedConversation;
-  }
+  selectedConversation: Conversation | null = null;
   title = 'my-app';
   sidebarFlex = '0 0 10%';
-  graphData: any;
-  chatHistory: any;
+  graphData: Conversation[] = [];
+  chatHistory: Conversation[] = [];
   isSidenavOpen = true;
   isGraphView = false;
-  conversations = [];
+  conversations: Conversation[] = [];
   initialPath: number[] = [];
 
   constructor(
@@ -63,25 +68,23 @@ export class AppComponent {
     return data.map((item: any) => item.title);
   }
 
-  findPath(data: any, targetQuery: string, path: any[] = []): any[] {
+  findPath(data: any[], targetQuery: string, path: any[] = []): any[] {
     for (const item of data) {
-      const newPath = [
-        ...path,
-        {
-          title: item.title,
-          query: item.query,
-          response: item.response,
-          queries: item.queries,
-        },
-      ];
+      const newPath = [...path, item];
+      console.log('findPath -> newPath', newPath);
       if (item.query === targetQuery) {
+        console.log('findPath -> Found path:', newPath);
         return newPath;
       }
-      const result = this.findPath(item.queries, targetQuery, newPath);
-      if (result.length) {
-        return result;
+      if (item.queries && item.queries.length > 0) {
+        const result = this.findPath(item.queries, targetQuery, newPath);
+        if (result.length > 0) {
+          console.log('findPath -> Found path:', result);
+          return result;
+        }
       }
     }
+    console.log('findPath -> No path found');
     return [];
   }
   onSubQuerySelect(subQuery: any): void {
@@ -96,8 +99,12 @@ export class AppComponent {
   }
 
   onNodeSelect(node: any): void {
+    console.log('Node selected:', node);
+    this.sharedDataService.setPathByQuery(node.query);
     this.chatHistory = this.findPath(this.graphData, node.query);
     this.initialPath = this.sharedDataService.getCurrentPath();
+    console.log('Path to node:', this.chatHistory);
+    console.log('Initial path:', this.initialPath);
   }
 
   addNewConversation(): void {
@@ -105,5 +112,20 @@ export class AppComponent {
     this.initialPath = [];
     this.chatHistory = []; // Clear the chat history
     this.sharedDataService.reset(); // Reset pointers in the data service
+  }
+
+  removeConversation(index: number, event: Event): void {
+    event.stopPropagation(); // Stop event propagation
+    console.log('Removing conversation at index:', index);
+    this.graphData.splice(index, 1);
+    this.conversations = this.preprocessData(this.graphData);
+
+    if (this.selectedConversation === this.graphData[index]) {
+      this.selectedConversation = this.graphData[0] || null;
+      this.chatHistory = this.sharedDataService.initializeDeepestConversation();
+      this.initialPath = this.sharedDataService.getCurrentPath();
+    }
+
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 }

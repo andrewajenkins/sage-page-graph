@@ -5,12 +5,29 @@
       Add New Conversation
     </button>
     <mat-nav-list>
-      <a
-        mat-list-item
-        *ngFor="let conversation of graphData"
+      <mat-list-item *ngFor="let conversation of conversations; let i = index">
+        <span
+          mat-button
+          (click)="selectConversation(conversation)"
+          class="conversation-button"
+        >
+          {{ conversation }}
+        </span>
+        <button mat-icon-button (click)="removeConversation(i, $event)">
+          <span class="material-symbols-outlined"> close </span>
+        </button>
+      </mat-list-item>
+      <!-- <mat-list-item
+        *ngFor="let conversation of conversations; let i = index"
         (click)="selectConversation(conversation)"
-        >{{ conversation.title }}</a
-      >
+        >{{ conversation }}
+        <button
+          mat-icon-button
+          (click)="removeConversation(i, $event); $event.stopPropagation()"
+        >
+          <span class="material-symbols-outlined"> close </span>
+        </button>
+      </mat-list-item> -->
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

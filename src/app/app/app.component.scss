@@ -4,8 +4,8 @@
 }
 
 mat-sidenav {
-  min-width: 15%;
-  width: 15%;
+  min-width: 20%;
+  width: 20%;
   overflow: auto;
 }
 
@@ -23,4 +23,12 @@ mat-sidenav-content {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+.conversation-button {
+  text-align: left;
+  width: 100%;
 }

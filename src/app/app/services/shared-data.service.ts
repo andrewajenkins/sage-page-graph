@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { Conversation } from '../app.component';
 
 @Injectable({
   providedIn: 'root',
@@ -314,7 +315,39 @@ export class SharedDataService {
     this.currentPath = [];
   }
 
-  getCurrentConversation(): {} {
+  getCurrentConversation(): Conversation {
     return this.data[this.currentPath[0]];
+  }
+
+  // New method to find the path by query
+  findPathByQuery(
+    data: any[],
+    targetQuery: string,
+    path: number[] = [],
+  ): number[] {
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      const newPath = [...path, i];
+      if (item.query === targetQuery) {
+        return newPath;
+      }
+      if (item.queries && item.queries.length > 0) {
+        const result = this.findPathByQuery(item.queries, targetQuery, newPath);
+        if (result.length > 0) {
+          return result;
+        }
+      }
+    }
+    return [];
+  }
+
+  // New method to set the path by query
+  setPathByQuery(targetQuery: string): void {
+    const path = this.findPathByQuery(this.data, targetQuery);
+    if (path.length > 0) {
+      this.currentPath = path;
+    } else {
+      console.error('Query not found in data');
+    }
   }
 }
