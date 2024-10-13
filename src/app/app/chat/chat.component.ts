@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -41,6 +47,16 @@ export class ChatComponent {
     this.openNodesAlongPath(this.initialPath);
   }
 
+  ngOnChanges(changes: any): void {
+    console.log('chat component -> changes', changes);
+    if (changes.chatHistory) {
+      this.chatHistory = changes.chatHistory.currentValue;
+    }
+    if (changes.initialPath) {
+      this.initialPath = changes.initialPath.currentValue;
+    }
+  }
+
   formatQueryResponse(item: any): string {
     return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
   }
@@ -54,7 +70,7 @@ export class ChatComponent {
         const newChatHistory = this.chatHistory.slice(0, parentIndex + 1);
         newChatHistory.push(subQuery); // Add the selected sub-query to the path
         this.chatHistory = newChatHistory;
-        this.subQuerySelect.emit(subQuery);
+        this.subQuerySelect.emit({ subQuery, path: newChatHistory });
         const newPath = [
           ...this.dataService.getCurrentPath().slice(0, parentIndex + 1),
           index,

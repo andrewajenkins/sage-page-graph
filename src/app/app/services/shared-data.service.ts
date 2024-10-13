@@ -319,6 +319,10 @@ export class SharedDataService {
     return this.data[this.currentPath[0]];
   }
 
+  getConversationByIndex(index: number): Conversation {
+    return this.data[index];
+  }
+
   // New method to find the path by query
   findPathByQuery(
     data: any[],
@@ -347,7 +351,7 @@ export class SharedDataService {
     if (path.length > 0) {
       this.currentPath = path;
     } else {
-      console.error('Query not found in data');
+      console.error('Query not found in data', this.data, targetQuery);
     }
   }
 }

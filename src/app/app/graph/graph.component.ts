@@ -65,6 +65,9 @@ export class GraphComponent {
       console.log('Item changed');
       this.initData();
     }
+    if (changes['initialPath'] && this.initialPath) {
+      this.expandNodesAlongPath(this.treeData, this.initialPath);
+    }
   }
 
   initData(): void {
@@ -91,6 +94,9 @@ export class GraphComponent {
   }
 
   expandNodesAlongPath(nodes: TreeNode[], path: number[]): void {
+    // Collapse all nodes first
+    this.collapseAllNodes(nodes);
+
     let currentNode = nodes[0];
     currentNode.expanded = true;
 
@@ -100,8 +106,18 @@ export class GraphComponent {
         currentNode.expanded = true;
       }
     }
-  }
 
+    // Set the selected node to the last node in the path
+    this.selectedNode = currentNode;
+  }
+  collapseAllNodes(nodes: TreeNode[]): void {
+    nodes.forEach((node) => {
+      node.expanded = false;
+      if (node.children) {
+        this.collapseAllNodes(node.children);
+      }
+    });
+  }
   addNewConversation(): void {
     this.selectedNode = null; // Unselect everything
     this.treeData = []; // Clear the graph

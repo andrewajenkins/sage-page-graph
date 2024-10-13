@@ -87,14 +87,16 @@ export class AppComponent {
     console.log('findPath -> No path found');
     return [];
   }
-  onSubQuerySelect(subQuery: any): void {
-    // Handle the sub-query selection
-    console.log('Sub-query selected:', subQuery);
-    // Update the chat history path or perform any other necessary actions
-  }
-  selectConversation(conversation: any): void {
-    this.selectedConversation = conversation;
-    this.chatHistory = this.findPath(this.graphData, conversation.query);
+
+  selectConversation(index: number): void {
+    this.selectedConversation =
+      this.sharedDataService.getConversationByIndex(index);
+    console.log('Selected conversation:', this.selectedConversation);
+    this.chatHistory = this.findPath(
+      this.graphData,
+      this.selectedConversation.query,
+    );
+    // const test = this.sharedDataService.initializeDeepestConversation();
     this.initialPath = this.sharedDataService.getCurrentPath();
   }
 
@@ -115,7 +117,7 @@ export class AppComponent {
   }
 
   removeConversation(index: number, event: Event): void {
-    event.stopPropagation(); // Stop event propagation
+    // event.stopPropagation(); // Stop event propagation
     console.log('Removing conversation at index:', index);
     this.graphData.splice(index, 1);
     this.conversations = this.preprocessData(this.graphData);
@@ -126,6 +128,17 @@ export class AppComponent {
       this.initialPath = this.sharedDataService.getCurrentPath();
     }
 
+    this.cdr.detectChanges(); // Manually trigger change detection
+  }
+
+  onSubQuerySelect(subQuery: any): void {
+    console.log('Sub-query selected:', subQuery);
+    this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
+    this.selectedConversation = this.sharedDataService.getCurrentConversation();
+    this.chatHistory = this.sharedDataService.getChatHistory();
+    this.initialPath = this.sharedDataService.getCurrentPath();
+    console.log('Updated chat history:', this.chatHistory);
+    console.log('Updated initial path:', this.initialPath);
     this.cdr.detectChanges(); // Manually trigger change detection
   }
 }
