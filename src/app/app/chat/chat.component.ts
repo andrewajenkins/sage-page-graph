@@ -33,7 +33,7 @@ export class ChatComponent {
   @Input() chatHistory: any;
   @Input() initialPath: number[] = [];
   @Output() subQuerySelect = new EventEmitter<any>();
-  @Output() acceptAnswer = new EventEmitter<any>();
+  @Output() conversationAdded = new EventEmitter<void>();
 
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
   selectedMachine = this.machines[0];
@@ -105,13 +105,20 @@ export class ChatComponent {
   }
   approveResponse(): void {
     if (this.pendingResponse) {
+      const isFirstConversation =
+        this.dataService.getChatHistory().length === 0;
+
       this.dataService.appendQuery(this.pendingResponse); // Append to data service
       this.chatHistory = this.dataService.getChatHistory(); // Update chat history
       this.onSubQueryClick(
         this.dataService.getCurrentPath().length - 1,
         this.dataService.getCurrentPath().length - 1,
       ); // Select the new node
-      this.acceptAnswer.emit(this.pendingResponse);
+
+      if (isFirstConversation) {
+        this.conversationAdded.emit(); // Emit event if it's the first conversation
+      }
+
       this.pendingResponse = null;
     }
   }

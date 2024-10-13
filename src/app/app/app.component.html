@@ -4,6 +4,9 @@
     <button mat-button (click)="addNewConversation()">
       Add New Conversation
     </button>
+    <button mat-button (click)="deleteCurrentConversation()">
+      Delete Current Conversation
+    </button>
     <mat-nav-list>
       <mat-list-item
         *ngFor="let conversation of conversations; let i = index"
@@ -27,6 +30,7 @@
           [chatHistory]="chatHistory"
           [initialPath]="initialPath"
           (subQuerySelect)="onSubQuerySelect($event)"
+          (conversationAdded)="onConversationAdded()"
         ></app-chat>
       </as-split-area>
     </as-split>

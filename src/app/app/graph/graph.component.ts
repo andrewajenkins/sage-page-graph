@@ -65,7 +65,12 @@ export class GraphComponent {
       console.log('Item changed');
       this.initData();
     }
-    if (changes['initialPath'] && this.initialPath) {
+    if (changes['item'] && !this.item) {
+      console.log('Item cleared');
+      this.treeData = [];
+      this.dataSource.data = this.treeData;
+    }
+    if (changes['initialPath'] && this.initialPath.length > 0) {
       this.expandNodesAlongPath(this.treeData, this.initialPath);
     }
   }

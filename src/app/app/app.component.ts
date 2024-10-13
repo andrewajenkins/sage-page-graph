@@ -8,6 +8,7 @@ import { AngularSplitModule } from 'angular-split';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'; // Import MatButtonModule
+import { MatMenuModule } from '@angular/material/menu'; // Import MatMenuModule
 
 export interface Conversation {
   title: string;
@@ -28,6 +29,7 @@ export interface Conversation {
     CommonModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -87,6 +89,18 @@ export class AppComponent {
     console.log('findPath -> No path found');
     return [];
   }
+  deleteCurrentConversation(): void {
+    if (this.selectedConversation) {
+      const path = this.sharedDataService.currentPath;
+      console.log('Current path:', path);
+      const index = path[0];
+      console.log('Index:', index);
+      // this.conversations.indexOf(this.selectedConversation);
+      if (index > -1) {
+        this.removeConversation(index, new Event('delete'));
+      }
+    }
+  }
 
   selectConversation(index: number): void {
     this.selectedConversation =
@@ -98,6 +112,20 @@ export class AppComponent {
     );
     // const test = this.sharedDataService.initializeDeepestConversation();
     this.initialPath = this.sharedDataService.getCurrentPath();
+
+    // Find the path to the selected conversation
+    const pathToSelected = this.findPath(
+      this.graphData,
+      this.selectedConversation.query,
+    );
+    console.log('Path to selected conversation:', pathToSelected);
+
+    // Set the initial path to the deepest conversation
+    this.initialPath = pathToSelected;
+
+    // Update the graph to open to the deepest conversation
+    this.sharedDataService.setPathByQuery(this.selectedConversation.query);
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   onNodeSelect(node: any): void {
@@ -119,18 +147,30 @@ export class AppComponent {
   removeConversation(index: number, event: Event): void {
     // event.stopPropagation(); // Stop event propagation
     console.log('Removing conversation at index:', index);
+    const wasCurrent =
+      this.selectedConversation?.query === this.graphData[index].query;
     this.graphData.splice(index, 1);
     this.conversations = this.preprocessData(this.graphData);
 
-    if (this.selectedConversation === this.graphData[index]) {
+    if (wasCurrent) {
       this.selectedConversation = this.graphData[0] || null;
-      this.chatHistory = this.sharedDataService.initializeDeepestConversation();
-      this.initialPath = this.sharedDataService.getCurrentPath();
+      if (this.selectedConversation) {
+        this.chatHistory =
+          this.sharedDataService.initializeDeepestConversation();
+        this.initialPath = this.sharedDataService.getCurrentPath();
+      } else {
+        this.chatHistory = [];
+        this.initialPath = [];
+        this.sharedDataService.reset();
+      }
     }
 
     this.cdr.detectChanges(); // Manually trigger change detection
   }
-
+  onConversationAdded(): void {
+    this.conversations = this.preprocessData(this.graphData);
+    this.cdr.detectChanges(); // Manually trigger change detection
+  }
   onSubQuerySelect(subQuery: any): void {
     console.log('Sub-query selected:', subQuery);
     this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
