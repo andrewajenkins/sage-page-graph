@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ChatComponent } from './chat/chat.component';
@@ -32,7 +32,10 @@ export class AppComponent {
   conversations = [];
   initialPath: number[] = [];
 
-  constructor(private sharedDataService: SharedDataService) {}
+  constructor(
+    private sharedDataService: SharedDataService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.graphData = this.sharedDataService.getData();
@@ -40,6 +43,14 @@ export class AppComponent {
     this.chatHistory = this.sharedDataService.initializeDeepestConversation();
     this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
     this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+
+    this.sharedDataService.queryAppended.subscribe(() => {
+      this.selectedConversation = {
+        ...this.sharedDataService.getCurrentConversation(),
+      };
+      this.initialPath = [...this.sharedDataService.getCurrentPath()];
+      this.cdr.detectChanges();
+    });
   }
 
   preprocessData(data: any): any {

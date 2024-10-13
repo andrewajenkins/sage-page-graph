@@ -90,10 +90,10 @@ export class ChatComponent {
     if (this.pendingResponse) {
       this.dataService.appendQuery(this.pendingResponse); // Append to data service
       this.chatHistory = this.dataService.getChatHistory(); // Update chat history
-      // this.onSubQueryClick(
-      //   this.dataService.getCurrentPath().length - 1,
-      //   this.dataService.getCurrentNode().length - 1,
-      // ); // Select the new node
+      this.onSubQueryClick(
+        this.dataService.getCurrentPath().length - 1,
+        this.dataService.getCurrentPath().length - 1,
+      ); // Select the new node
       this.acceptAnswer.emit(this.pendingResponse);
       this.pendingResponse = null;
     }

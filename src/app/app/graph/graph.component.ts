@@ -59,16 +59,6 @@ export class GraphComponent {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-  constructor(
-    private sharedDataService: SharedDataService, // Inject DataService
-  ) {}
-
-  ngOnInit(): void {
-    this.sharedDataService.queryAppended.subscribe(() => {
-      this.initData();
-    });
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ch ch ch changes:', changes);
     if (changes['item'] && this.item) {
@@ -113,6 +103,7 @@ export class GraphComponent {
       }
     }
   }
+
   addNewConversation(): void {
     this.selectedNode = null; // Unselect everything
     this.treeData = []; // Clear the graph
