@@ -10,6 +10,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { TreeNode } from 'primeng/api';
+import {
+  MatTreeFlattener,
+  MatTreeFlatDataSource,
+} from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
 import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
 @Component({
@@ -22,20 +27,51 @@ import { TreeModule } from 'primeng/tree';
     MatListModule,
     TreeModule,
     TooltipModule,
+    TreeModule,
   ],
   templateUrl: './graph.component.html',
   styleUrl: './graph.component.scss',
 })
 export class GraphComponent {
   @Input() item: any;
+  @Input() initialPath: number[] = [];
   @Output() nodeSelect = new EventEmitter<any>();
 
   treeData!: TreeNode[];
   selectedNode: TreeNode<any> | TreeNode<any>[] | null = null;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['item'] && this.item) {
+  treeControl = new FlatTreeControl<any>(
+    (node) => node.level,
+    (node) => node.expandable,
+  );
+
+  treeFlattener = new MatTreeFlattener(
+    (node: any, level: number) => ({
+      expandable: !!node.queries && node.queries.length > 0,
+      title: node.title,
+      level: level,
+    }),
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.queries,
+  );
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+  ngOnInit(): void {
+    if (this.item) {
       this.treeData = this.convertToTreeNodes([this.item]);
+      this.expandNodesAlongPath(this.treeData, this.initialPath); // Expand nodes along the initial path
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes['item'] && this.item) {
+      console.log('Item changed');
+      this.treeData = this.convertToTreeNodes([this.item]);
+    } else {
+      this.treeData = [];
     }
   }
 
@@ -54,5 +90,22 @@ export class GraphComponent {
       title: event.node.label,
       query: event.node.data.query,
     });
+  }
+
+  expandNodesAlongPath(nodes: TreeNode[], path: number[]): void {
+    let currentNode = nodes[0];
+    currentNode.expanded = true;
+
+    for (const index of path) {
+      if (currentNode.children && currentNode.children[index]) {
+        currentNode = currentNode.children[index];
+        currentNode.expanded = true;
+      }
+    }
+  }
+  addNewConversation(): void {
+    this.selectedNode = null; // Unselect everything
+    this.treeData = []; // Clear the graph
+    this.nodeSelect.emit(null); // Emit null to indicate no selection
   }
 }

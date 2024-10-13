@@ -30,6 +30,7 @@ export class AppComponent {
   isSidenavOpen = true;
   isGraphView = false;
   conversations = [];
+  initialPath: number[] = [];
 
   constructor(private sharedDataService: SharedDataService) {}
 
@@ -37,6 +38,8 @@ export class AppComponent {
     this.graphData = this.sharedDataService.getData();
     this.conversations = this.preprocessData(this.graphData);
     this.chatHistory = this.sharedDataService.initializeDeepestConversation();
+    this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
+    this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
   }
 
   preprocessData(data: any): any {
@@ -72,9 +75,31 @@ export class AppComponent {
   selectConversation(conversation: any): void {
     this.selectedConversation = conversation;
     this.chatHistory = this.findPath(this.graphData, conversation.query);
+    this.initialPath = this.sharedDataService.getCurrentPath();
   }
 
   onNodeSelect(node: any): void {
     this.chatHistory = this.findPath(this.graphData, node.query);
+    this.initialPath = this.sharedDataService.getCurrentPath();
+  }
+
+  acceptNewAnswer(newAnswer: any): void {
+    const newConversation = {
+      title: newAnswer.title,
+      query: newAnswer.query,
+      response: newAnswer.response,
+      queries: [],
+    };
+    this.graphData.push(newConversation);
+    this.selectedConversation = newConversation;
+    this.chatHistory = [newConversation];
+    this.initialPath = [this.graphData.length - 1]; // Set the initial path to the new conversation
+  }
+
+  addNewConversation(): void {
+    this.selectedConversation = null; // Unselect everything
+    this.initialPath = [];
+    this.chatHistory = []; // Clear the chat history
+    this.sharedDataService.reset(); // Reset pointers in the data service
   }
 }

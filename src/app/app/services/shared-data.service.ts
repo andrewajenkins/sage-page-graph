@@ -311,4 +311,8 @@ export class SharedDataService {
     this.currentPath = path;
     return chatHistory;
   }
+
+  reset(): void {
+    this.currentPath = [];
+  }
 }

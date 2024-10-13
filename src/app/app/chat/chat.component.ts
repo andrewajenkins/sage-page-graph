@@ -25,6 +25,7 @@ import { SharedDataService } from '../services/shared-data.service';
 })
 export class ChatComponent {
   @Input() chatHistory: any;
+  @Input() initialPath: number[] = [];
   @Output() subQuerySelect = new EventEmitter<any>();
 
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
@@ -35,7 +36,9 @@ export class ChatComponent {
   constructor(
     private openAIService: OpenAIService,
     private dataService: SharedDataService, // Inject DataService
-  ) {}
+  ) {
+    this.openNodesAlongPath(this.initialPath);
+  }
 
   formatQueryResponse(item: any): string {
     return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
@@ -96,5 +99,16 @@ export class ChatComponent {
 
   deleteResponse(): void {
     this.pendingResponse = null;
+  }
+  openNodesAlongPath(path: number[]): void {
+    let currentNode = this.dataService.getData();
+    this.chatHistory = [currentNode[0]];
+
+    for (const index of path) {
+      if (currentNode[index] && currentNode[index].queries) {
+        currentNode = currentNode[index].queries;
+        this.chatHistory.push(currentNode[0]);
+      }
+    }
   }
 }
