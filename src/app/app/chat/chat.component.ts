@@ -27,6 +27,7 @@ export class ChatComponent {
   @Input() chatHistory: any;
   @Input() initialPath: number[] = [];
   @Output() subQuerySelect = new EventEmitter<any>();
+  @Output() acceptAnswer = new EventEmitter<any>();
 
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
   selectedMachine = this.machines[0];
@@ -89,10 +90,11 @@ export class ChatComponent {
     if (this.pendingResponse) {
       this.dataService.appendQuery(this.pendingResponse); // Append to data service
       this.chatHistory = this.dataService.getChatHistory(); // Update chat history
-      this.onSubQueryClick(
-        this.dataService.getCurrentPath().length - 1,
-        this.dataService.getCurrentNode().length - 1,
-      ); // Select the new node
+      // this.onSubQueryClick(
+      //   this.dataService.getCurrentPath().length - 1,
+      //   this.dataService.getCurrentNode().length - 1,
+      // ); // Select the new node
+      this.acceptAnswer.emit(this.pendingResponse);
       this.pendingResponse = null;
     }
   }

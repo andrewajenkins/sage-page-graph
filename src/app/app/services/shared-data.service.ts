@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SharedDataService {
-  private currentPath: number[] = [];
+  private currentPath: number[] = []; // list of number indexes that traverse the sets of queries in a path
+  queryAppended = new EventEmitter<void>();
+
   private data = [
     {
       title: 'Double-Slit Experiment',
@@ -144,25 +146,6 @@ export class SharedDataService {
       ],
     },
     {
-      title: 'History of Philosophy',
-      query: 'History of philosophy',
-      response: 'Some response about the history of philosophy',
-      queries: [
-        {
-          title: 'Ancient Philosophy',
-          query: 'Tell me more about ancient philosophy',
-          response: '...',
-          queries: [],
-        },
-        {
-          title: 'Modern Philosophy',
-          query: 'Tell me more about modern philosophy',
-          response: 'some rather brief response',
-          queries: [],
-        },
-      ],
-    },
-    {
       title: 'Quantum Mechanics',
       query: 'Quantum mechanics',
       response: 'Some response about quantum mechanics',
@@ -267,26 +250,29 @@ export class SharedDataService {
   }
 
   getChatHistory(): any[] {
-    let node = this.data;
+    let queriesList = this.data;
     const chatHistory = [];
     for (const index of this.currentPath) {
-      chatHistory.push(node[index]);
-      node = node[index].queries;
+      chatHistory.push(queriesList[index]);
+      queriesList = queriesList[index].queries;
     }
     return chatHistory;
   }
 
-  getCurrentNode(): any {
-    let node = this.data;
+  getCurrentQueriesList(): any {
+    let queriesList = this.data;
     for (const index of this.currentPath) {
-      node = node[index].queries;
+      queriesList = queriesList[index].queries;
     }
-    return node;
+    return queriesList;
   }
 
   appendQuery(query: any): void {
-    const currentNode = this.getCurrentNode();
-    currentNode.push(query);
+    const currentQueriesList = this.getCurrentQueriesList();
+    console.log('Current queries list:', currentQueriesList);
+    currentQueriesList.push(query);
+    this.currentPath.push(currentQueriesList.length - 1);
+    this.queryAppended.emit();
   }
 
   selectNode(path: number[]): void {
@@ -298,14 +284,14 @@ export class SharedDataService {
   }
 
   initializeDeepestConversation(): any[] {
-    let node = this.data[0];
+    let queriesList = this.data[0];
     const path = [0];
-    const chatHistory = [node];
+    const chatHistory = [queriesList];
 
-    while (node.queries && node.queries.length > 0) {
-      node = node.queries[0];
+    while (queriesList.queries && queriesList.queries.length > 0) {
+      queriesList = queriesList.queries[0];
       path.push(0);
-      chatHistory.push(node);
+      chatHistory.push(queriesList);
     }
 
     this.currentPath = path;
@@ -314,5 +300,9 @@ export class SharedDataService {
 
   reset(): void {
     this.currentPath = [];
+  }
+
+  getCurrentConversation(): {} {
+    return this.data[this.currentPath[0]];
   }
 }

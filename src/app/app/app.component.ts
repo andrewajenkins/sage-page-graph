@@ -83,18 +83,18 @@ export class AppComponent {
     this.initialPath = this.sharedDataService.getCurrentPath();
   }
 
-  acceptNewAnswer(newAnswer: any): void {
-    const newConversation = {
-      title: newAnswer.title,
-      query: newAnswer.query,
-      response: newAnswer.response,
-      queries: [],
-    };
-    this.graphData.push(newConversation);
-    this.selectedConversation = newConversation;
-    this.chatHistory = [newConversation];
-    this.initialPath = [this.graphData.length - 1]; // Set the initial path to the new conversation
-  }
+  // acceptNewAnswer(newAnswer: any): void {
+  //   const newConversation = {
+  //     title: newAnswer.title,
+  //     query: newAnswer.query,
+  //     response: newAnswer.response,
+  //     queries: [],
+  //   };
+  //   this.graphData.push(newConversation);
+  //   this.selectedConversation = newConversation;
+  //   this.chatHistory = [newConversation];
+  //   this.initialPath = [this.graphData.length - 1]; // Set the initial path to the new conversation
+  // }
 
   addNewConversation(): void {
     this.selectedConversation = null; // Unselect everything

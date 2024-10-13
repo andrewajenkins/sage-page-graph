@@ -17,6 +17,7 @@ import {
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
+import { SharedDataService } from '../services/shared-data.service';
 @Component({
   selector: 'app-graph',
   standalone: true,
@@ -58,21 +59,30 @@ export class GraphComponent {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+  constructor(
+    private sharedDataService: SharedDataService, // Inject DataService
+  ) {}
+
   ngOnInit(): void {
-    if (this.item) {
-      this.treeData = this.convertToTreeNodes([this.item]);
-      this.expandNodesAlongPath(this.treeData, this.initialPath); // Expand nodes along the initial path
-    }
+    this.sharedDataService.queryAppended.subscribe(() => {
+      this.initData();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    console.log('ch ch ch changes:', changes);
     if (changes['item'] && this.item) {
       console.log('Item changed');
-      this.treeData = this.convertToTreeNodes([this.item]);
+      this.initData();
     } else {
       this.treeData = [];
     }
+  }
+
+  initData(): void {
+    this.treeData = this.convertToTreeNodes([this.item]);
+    this.dataSource.data = this.treeData;
+    this.expandNodesAlongPath(this.treeData, this.initialPath);
   }
 
   convertToTreeNodes(data: any): TreeNode[] {
