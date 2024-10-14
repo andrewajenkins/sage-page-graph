@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: tools/docker/backend/Dockerfile
-    command: gunicorn --workers 3 --bind 0.0.0.0:8000 mybackend.wsgi:application
+    command: gunicorn --workers 3 --bind 0.0.0.0:8000 graph.wsgi:application
     volumes:
       - ./backend:/usr/src/app
     ports:
