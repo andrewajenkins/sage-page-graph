@@ -1,2 +1,30 @@
+### Test hello_world endpoint
 GET http://localhost:8000/api/hello/
 Accept: application/json
+
+### Test ConversationListCreateView endpoint (GET)
+GET http://localhost:8000/api/conversations/
+Accept: application/json
+
+### Test ConversationListCreateView endpoint (POST)
+POST http://localhost:8000/api/conversations/
+Content-Type: application/json
+
+{
+  "title": "New Conversation",
+  "description": "This is a new conversation."
+}
+
+### Test MessageListCreateView endpoint (GET)
+GET http://localhost:8000/api/messages/
+Accept: application/json
+
+### Test MessageListCreateView endpoint (POST)
+POST http://localhost:8000/api/messages/
+Content-Type: application/json
+
+{
+  "conversation": 1,
+  "query": "This is a new query.",
+  "response": "This is a new response."
+}
