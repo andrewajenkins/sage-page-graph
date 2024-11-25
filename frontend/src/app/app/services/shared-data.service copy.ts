@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Conversation } from '../app.component';
+import { Message } from '../app.component';
 
 @Injectable({
   providedIn: 'root',
@@ -217,11 +217,11 @@ export class SharedDataService {
     this.currentPath = [];
   }
 
-  getCurrentConversation(): Conversation {
+  getCurrentConversation(): Message {
     return this.data[this.currentPath[0]];
   }
 
-  getConversationByIndex(index: number): Conversation {
+  getConversationByIndex(index: number): Message {
     return this.data[index];
   }
 

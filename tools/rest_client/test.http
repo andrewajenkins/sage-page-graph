@@ -3,7 +3,11 @@ GET http://localhost:8000/api/hello/
 Accept: application/json
 
 ### Test ConversationListCreateView endpoint (GET)
-GET http://localhost:8000/api/conversations/
+GET http://localhost:8000/api/conversations/titles/
+Accept: application/json
+
+### Teest ConversationDetailView endpoint (GET)
+GET http://localhost:8000/api/conversations/12/
 Accept: application/json
 
 ### Test ConversationListCreateView endpoint (POST)

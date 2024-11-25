@@ -11,10 +11,14 @@ import { MatButtonModule } from '@angular/material/button'; // Import MatButtonM
 import { MatMenuModule } from '@angular/material/menu'; // Import MatMenuModule
 
 export interface Conversation {
+  messages: Message[];
+}
+
+export interface Message {
   title: string;
   query: string;
   response: string;
-  queries: Conversation[];
+  queries: Message[];
 }
 
 @Component({
@@ -38,11 +42,11 @@ export class AppComponent {
   selectedConversation: Conversation | null = null;
   title = 'my-app';
   sidebarFlex = '0 0 10%';
-  graphData: Conversation[] = [];
-  chatHistory: Conversation[] = [];
+  graphData: Message[] = [];
+  chatHistory: Message[] = [];
   isSidenavOpen = true;
   isGraphView = false;
-  conversations: Conversation[] = [];
+  conversations: string[] = [];
   initialPath: number[] = [];
 
   constructor(
@@ -51,11 +55,16 @@ export class AppComponent {
   ) {}
 
   ngOnInit(): void {
-    this.graphData = this.sharedDataService.getData();
-    this.conversations = this.preprocessData(this.graphData);
+    // this.graphData = this.sharedDataService.getData();
+    this.sharedDataService.getConversationTitles().subscribe((convos: string[]) => {
+      this.conversations = convos;
+    });
+    this.sharedDataService.getConversationById(0).subscribe((c: Conversation) => {
+      this.selectedConversation = c;
+    });
     this.chatHistory = this.sharedDataService.initializeDeepestConversation();
-    this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
     this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+    this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
 
     this.sharedDataService.queryAppended.subscribe(() => {
       this.selectedConversation = {
@@ -64,10 +73,6 @@ export class AppComponent {
       this.initialPath = [...this.sharedDataService.getCurrentPath()];
       this.cdr.detectChanges();
     });
-  }
-
-  preprocessData(data: any): any {
-    return data.map((item: any) => item.title);
   }
 
   findPath(data: any[], targetQuery: string, path: any[] = []): any[] {
