@@ -42,8 +42,8 @@ export class AppComponent {
   selectedConversation: Conversation | null = null;
   title = 'my-app';
   sidebarFlex = '0 0 10%';
-  graphData: Message[] = [];
-  chatHistory: Message[] = [];
+  graphData: Conversation[] = [];
+  chatHistory: Conversation[] = [];
   isSidenavOpen = true;
   isGraphView = false;
   conversations: string[] = [];
@@ -62,7 +62,7 @@ export class AppComponent {
     this.sharedDataService.getConversationById(0).subscribe((c: Conversation) => {
       this.selectedConversation = c;
     });
-    this.chatHistory = this.sharedDataService.initializeDeepestConversation();
+    // this.chatHistory = this.sharedDataService.initializeDeepestConversation();
     this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
     this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
 
@@ -113,7 +113,7 @@ export class AppComponent {
     console.log('Selected conversation:', this.selectedConversation);
     this.chatHistory = this.findPath(
       this.graphData,
-      this.selectedConversation.query,
+      this.selectedConversation.messages[0].query,
     );
     // const test = this.sharedDataService.initializeDeepestConversation();
     this.initialPath = this.sharedDataService.getCurrentPath();
@@ -121,7 +121,7 @@ export class AppComponent {
     // Find the path to the selected conversation
     const pathToSelected = this.findPath(
       this.graphData,
-      this.selectedConversation.query,
+      this.selectedConversation.messages[0].query,
     );
     console.log('Path to selected conversation:', pathToSelected);
 
@@ -129,7 +129,7 @@ export class AppComponent {
     this.initialPath = pathToSelected;
 
     // Update the graph to open to the deepest conversation
-    this.sharedDataService.setPathByQuery(this.selectedConversation.query);
+    this.sharedDataService.setPathByQuery(this.selectedConversation.messages[0].query);
     this.cdr.detectChanges(); // Manually trigger change detection
   }
 
@@ -153,7 +153,7 @@ export class AppComponent {
     // event.stopPropagation(); // Stop event propagation
     console.log('Removing conversation at index:', index);
     const wasCurrent =
-      this.selectedConversation?.query === this.graphData[index].query;
+      this.selectedConversation?.messages[0]?.query === this.graphData[index].messages[0].query;
     this.graphData.splice(index, 1);
     this.conversations = this.preprocessData(this.graphData);
 
@@ -161,7 +161,7 @@ export class AppComponent {
       this.selectedConversation = this.graphData[0] || null;
       if (this.selectedConversation) {
         this.chatHistory =
-          this.sharedDataService.initializeDeepestConversation();
+          this.sharedDataService.initializeDeepestConversation(this.selectedConversation);
         this.initialPath = this.sharedDataService.getCurrentPath();
       } else {
         this.chatHistory = [];
@@ -185,5 +185,9 @@ export class AppComponent {
     console.log('Updated chat history:', this.chatHistory);
     console.log('Updated initial path:', this.initialPath);
     this.cdr.detectChanges(); // Manually trigger change detection
+  }
+
+  private preprocessData(graphData: Conversation[]) {
+    return graphData.map((c) => c.messages[0].title)
   }
 }

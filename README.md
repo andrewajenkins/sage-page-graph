@@ -1,3 +1,3 @@
 # Sage Page Graph
-- `docker compose up --build`
-- `cd frontend && npm install && npm start`
+- from wsl2 shell `docker compose up --build`
+- from windows shell `cd frontend && npm install && npm start`

@@ -10,6 +10,9 @@ export class SharedDataService {
   private apiUrl = 'http://localhost:8000/api';
   queryAppended = new EventEmitter<void>();
   currentPath: number[] = [];
+  data: any[] = [];
+  queries: any[] = [];
+
   constructor(private http: HttpClient) {}
 
   getConversationTitles(): Observable<string[]> {
@@ -63,8 +66,8 @@ export class SharedDataService {
     this.currentPath.push(index);
   }
 
-  initializeDeepestConversation(convo: Message[]): any[] {
-    let rootNode = convo
+  initializeDeepestConversation(convo: Conversation): any[] {
+    let rootNode = convo.messages[0];
     const path = [0];
     const chatHistory = [rootNode];
 
@@ -82,11 +85,11 @@ export class SharedDataService {
     this.currentPath = [];
   }
 
-  getCurrentConversation(): Message {
+  getCurrentConversation(): Conversation {
     return this.data[this.currentPath[0]];
   }
 
-  getConversationByIndex(index: number): Message {
+  getConversationByIndex(index: number): Conversation {
     return this.data[index];
   }
 
