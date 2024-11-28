@@ -20,7 +20,9 @@ export class SharedDataService {
   }
 
   getConversationById(id: number): Observable<Conversation> {
-    return this.http.get<Conversation>(`${this.apiUrl}/conversations/${id}/`);
+    return this.http.get<Conversation>(
+      `${this.apiUrl}/conversations/${id}/detail/`,
+    );
   }
 
   addChatMessage(convoId: number, message: Message): Observable<void> {
@@ -30,6 +32,9 @@ export class SharedDataService {
     );
   }
 
+  deleteConversation(id: number) {
+    return this.http.delete<void>(`${this.apiUrl}/conversations/${id}/delete/`);
+  }
   addFirstChatMessage(message: Message): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/conversations/messages/`, {
       ...message,

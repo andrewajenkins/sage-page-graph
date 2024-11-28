@@ -1,10 +1,13 @@
 # views.py
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from graph.models import Conversation # Update this line if necessary
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.views import APIView
 
 from .serializers import ConversationDetailSerializer, ConversationTitleSerializer, MessageSerializer
 
@@ -60,4 +63,18 @@ class MessageCreateView(generics.CreateAPIView):
             "message": serializer.data
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+class ConvoDeleteView(APIView):
+    """
+    View to delete a conversation by its ID.
+    """
+    def delete(self, request, convo_id, *args, **kwargs):
+        # Get the conversation or return a 404 if not found
+        conversation = get_object_or_404(Conversation, pk=convo_id)
+
+        # Perform the deletion
+        conversation.delete()
+
+        return Response({"message": "Conversation deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
