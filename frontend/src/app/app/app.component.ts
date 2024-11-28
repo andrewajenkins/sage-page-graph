@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ChatComponent } from './chat/chat.component';
@@ -60,18 +60,23 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // this.graphData = this.sharedDataService.getData();
-    this.sharedDataService.getConversationTitles().subscribe((convos: Conversation[]) => {
-      this.conversations = convos.map((c) => {
-        return {...c, messages: [] as Message[]}
-      } );
-      if (this.conversations.length > 0) {
-        this.sharedDataService.getConversationById(this.conversations[0].id).subscribe((c: Conversation) => {
-          this.selectedConversation = c;
-          this.chatHistory = this.sharedDataService.initializeDeepestConversation(c);
-          this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+    this.sharedDataService
+      .getConversationTitles()
+      .subscribe((convos: Conversation[]) => {
+        this.conversations = convos.map((c) => {
+          return { ...c, messages: [] as Message[] };
         });
-      }
-    });
+        if (this.conversations.length > 0) {
+          this.sharedDataService
+            .getConversationById(this.conversations[0].id)
+            .subscribe((c: Conversation) => {
+              this.selectedConversation = c;
+              this.chatHistory =
+                this.sharedDataService.initializeDeepestConversation(c);
+              this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+            });
+        }
+      });
 
     this.sharedDataService.queryAppended.subscribe(() => {
       this.selectedConversation = {
@@ -115,30 +120,21 @@ export class AppComponent implements OnInit {
   }
 
   selectConversation(index: number): void {
-    this.sharedDataService.getConversationById(this.conversations[index].id).subscribe((c: Conversation) => {
-      this.selectedConversation = c;
-      console.log('Selected conversation:', this.selectedConversation);
-      this.chatHistory = this.findPath(
-        this.graphData,
-        this.selectedConversation.messages[0].query,
-      );
-      // const test = this.sharedDataService.initializeDeepestConversation();
-      this.initialPath = this.sharedDataService.getCurrentPath();
+    this.sharedDataService
+      .getConversationById(this.conversations[index].id)
+      .subscribe((c: Conversation) => {
+        this.selectedConversation = c;
+        console.log('Selected conversation:', this.selectedConversation);
+        this.chatHistory =
+          this.sharedDataService.initializeDeepestConversation(c);
+        this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
 
-      // Find the path to the selected conversation
-      const pathToSelected = this.findPath(
-        this.graphData,
-        this.selectedConversation.messages[0].query,
-      );
-      console.log('Path to selected conversation:', pathToSelected);
-
-      // Set the initial path to the deepest conversation
-      this.initialPath = pathToSelected;
-
-      // Update the graph to open to the deepest conversation
-      this.sharedDataService.setPathByQuery(this.selectedConversation.messages[0].query);
-      this.cdr.detectChanges(); // Manually trigger change detection
-    });
+        // Update the graph to open to the deepest conversation
+        this.sharedDataService.setPathByQuery(
+          this.selectedConversation.messages[0].query,
+        );
+        this.cdr.detectChanges(); // Manually trigger change detection
+      });
   }
 
   onNodeSelect(node: any): void {
@@ -161,15 +157,17 @@ export class AppComponent implements OnInit {
     // event.stopPropagation(); // Stop event propagation
     console.log('Removing conversation at index:', index);
     const wasCurrent =
-      this.selectedConversation?.messages[0]?.query === this.graphData[index].messages[0].query;
+      this.selectedConversation?.messages[0]?.query ===
+      this.graphData[index].messages[0].query;
     this.graphData.splice(index, 1);
     this.conversations = this.preprocessData(this.graphData);
 
     if (wasCurrent) {
       this.selectedConversation = this.graphData[0] || null;
       if (this.selectedConversation) {
-        this.chatHistory =
-          this.sharedDataService.initializeDeepestConversation(this.selectedConversation);
+        this.chatHistory = this.sharedDataService.initializeDeepestConversation(
+          this.selectedConversation,
+        );
         this.initialPath = this.sharedDataService.getCurrentPath();
       } else {
         this.chatHistory = [];
@@ -196,6 +194,6 @@ export class AppComponent implements OnInit {
   }
 
   private preprocessData(graphData: Conversation[]) {
-    return graphData //.map((c) => c.messages[0].title)
+    return graphData; //.map((c) => c.messages[0].title)
   }
 }
