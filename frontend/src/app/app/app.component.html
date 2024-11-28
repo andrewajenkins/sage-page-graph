@@ -11,6 +11,7 @@
       <mat-list-item
         *ngFor="let conversation of conversations; let i = index"
         (click)="selectConversationByIndex(i)"
+        disableRipple
         >{{ conversation?.title }}
       </mat-list-item>
     </mat-nav-list>
