@@ -68,17 +68,32 @@ export class SharedDataService {
 
   initializeDeepestConversation(convo: Conversation): any[] {
     let rootNode = convo.messages[0];
-    const path = [0];
+    for (const message of convo.messages) {
+      if (new Date(message.updated_at) > new Date(rootNode.updated_at)) {
+        rootNode = message;
+      }
+    }
+
+    const path = [rootNode.id];
     const chatHistory = [rootNode];
 
-    while (rootNode.queries && rootNode.queries.length > 0) {
-      rootNode = rootNode.queries[0];
-      path.push(0);
+    while (rootNode.parent_message) {
+      rootNode = this.getMessageById(convo, rootNode.parent_message)
+      path.push(rootNode.id);
       chatHistory.push(rootNode);
     }
 
     this.currentPath = path;
     return chatHistory;
+  }
+
+  getMessageById(convo: Conversation, id: number): Message {
+    for (const message of convo.messages) {
+      if (message.id === id) {
+        return message;
+      }
+    }
+    throw new Error('Message not found');
   }
 
   reset(): void {
@@ -87,10 +102,6 @@ export class SharedDataService {
 
   getCurrentConversation(): Conversation {
     return this.data[this.currentPath[0]];
-  }
-
-  getConversationByIndex(index: number): Conversation {
-    return this.data[index];
   }
 
   // New method to find the path by query
