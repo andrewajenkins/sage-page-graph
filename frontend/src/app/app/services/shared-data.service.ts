@@ -64,6 +64,7 @@ export class SharedDataService {
   }
 
   initializeDeepestConversation(convo: Conversation): Message[] {
+    if (!convo) return [];
     let rootNode = convo.messages[0];
     for (const message of convo.messages) {
       if (new Date(message.updated_at) > new Date(rootNode.updated_at)) {

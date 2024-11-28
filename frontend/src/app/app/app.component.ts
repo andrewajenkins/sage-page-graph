@@ -113,10 +113,10 @@ export class AppComponent implements OnInit {
       const index = this.conversations.findIndex(
         (c) => c.id === this.selectedConversation?.id,
       );
-      delete this.conversations[index];
+      this.conversations.splice(index, 1);
       this.conversations.length > 0
         ? this.selectConversation(this.conversations[0].id)
-        : null;
+        : this.selectConversation(-1);
       this.chatHistory = this.sharedDataService.initializeDeepestConversation(
         this.selectedConversation!,
       );
@@ -131,17 +131,24 @@ export class AppComponent implements OnInit {
   }
 
   selectConversation(id: number): void {
-    this.sharedDataService
-      .getConversationById(id)
-      .subscribe((c: Conversation) => {
-        this.selectedConversation = c;
-        console.log('Selected conversation:', this.selectedConversation);
-        this.chatHistory =
-          this.sharedDataService.initializeDeepestConversation(c);
-        this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+    if (id > 0)
+      this.sharedDataService
+        .getConversationById(id)
+        .subscribe((c: Conversation) => {
+          this.selectedConversation = c;
+          console.log('Selected conversation:', this.selectedConversation);
+          this.chatHistory =
+            this.sharedDataService.initializeDeepestConversation(c);
+          this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
 
-        this.cdr.detectChanges(); // Manually trigger change detection
-      });
+          this.cdr.detectChanges(); // Manually trigger change detection
+        });
+    else {
+      this.selectedConversation = null;
+      this.chatHistory = [];
+      this.initialPath = [];
+      this.sharedDataService.reset();
+    }
   }
 
   onNodeSelect(node: any): void {
@@ -163,31 +170,6 @@ export class AppComponent implements OnInit {
     this.sharedDataService.reset(); // Reset pointers in the data service
   }
 
-  removeConversation(index: number, event: Event): void {
-    // event.stopPropagation(); // Stop event propagation
-    console.log('Removing conversation at index:', index);
-    const wasCurrent =
-      this.selectedConversation?.messages[0]?.query ===
-      this.graphData[index].messages[0].query;
-    this.graphData.splice(index, 1);
-    this.conversations = this.preprocessData(this.graphData);
-
-    if (wasCurrent) {
-      this.selectedConversation = this.graphData[0] || null;
-      if (this.selectedConversation) {
-        this.chatHistory = this.sharedDataService.initializeDeepestConversation(
-          this.selectedConversation,
-        );
-        this.initialPath = this.sharedDataService.getCurrentPath();
-      } else {
-        this.chatHistory = [];
-        this.initialPath = [];
-        this.sharedDataService.reset();
-      }
-    }
-
-    this.cdr.detectChanges(); // Manually trigger change detection
-  }
   onMessageAdded(msg: Message): void {
     this.sharedDataService
       .addChatMessage(this.selectedConversation?.id!, {
