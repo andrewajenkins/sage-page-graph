@@ -18,7 +18,11 @@ class Message(models.Model):
     Messages can have a parent-child relationship to represent branching conversations.
     """
 
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)  # Links the message to a conversation
+    conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name='messages'  # Allows reverse access to related messages
+    )
     title = models.TextField()  # Conversation title
     query = models.TextField()  # Message content (query or response)
     response= models.TextField()  # Message content (query or response)

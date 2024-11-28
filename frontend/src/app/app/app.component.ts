@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button'; // Import MatButtonM
 import { MatMenuModule } from '@angular/material/menu'; // Import MatMenuModule
 
 export interface Conversation {
+  id: number;
+  title: string;
   messages: Message[];
 }
 
@@ -46,7 +48,7 @@ export class AppComponent {
   chatHistory: Conversation[] = [];
   isSidenavOpen = true;
   isGraphView = false;
-  conversations: string[] = [];
+  conversations: Conversation[] = [];
   initialPath: number[] = [];
 
   constructor(
@@ -56,12 +58,17 @@ export class AppComponent {
 
   ngOnInit(): void {
     // this.graphData = this.sharedDataService.getData();
-    this.sharedDataService.getConversationTitles().subscribe((convos: string[]) => {
-      this.conversations = convos;
+    this.sharedDataService.getConversationTitles().subscribe((convos: Conversation[]) => {
+      this.conversations = convos.map((c) => {
+        return {...c, messages: [] as Message[]}
+      } );
+      if (this.conversations.length > 0) {
+        this.sharedDataService.getConversationById(this.conversations[0].id).subscribe((c: Conversation) => {
+          this.selectedConversation = c;
+        });
+      }
     });
-    this.sharedDataService.getConversationById(0).subscribe((c: Conversation) => {
-      this.selectedConversation = c;
-    });
+
     // this.chatHistory = this.sharedDataService.initializeDeepestConversation();
     this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
     this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
@@ -188,6 +195,6 @@ export class AppComponent {
   }
 
   private preprocessData(graphData: Conversation[]) {
-    return graphData.map((c) => c.messages[0].title)
+    return graphData //.map((c) => c.messages[0].title)
   }
 }

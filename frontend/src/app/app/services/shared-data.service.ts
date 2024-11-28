@@ -15,8 +15,8 @@ export class SharedDataService {
 
   constructor(private http: HttpClient) {}
 
-  getConversationTitles(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/conversations/`);
+  getConversationTitles(): Observable<Conversation[]> {
+    return this.http.get<Conversation[]>(`${this.apiUrl}/conversations/`);
   }
 
   getConversationById(id: number): Observable<Conversation> {
