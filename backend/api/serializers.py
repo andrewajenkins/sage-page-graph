@@ -13,7 +13,7 @@ class ConversationTitleSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'parent_message', 'query', 'response', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'parent_message', 'query', 'response', 'created_at', 'updated_at']
 
 class ConversationDetailSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)

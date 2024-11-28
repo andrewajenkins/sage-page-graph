@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenAIService } from '../services/openai.service';
 import { SharedDataService } from '../services/shared-data.service';
+import { Message } from '../app.component';
 @Component({
   selector: 'app-chat',
   standalone: true,

@@ -74,11 +74,13 @@ export class SharedDataService {
       }
     }
 
+    rootNode.queries = this.getSubQueries(convo, rootNode.id);
     const path = [rootNode.id];
     const chatHistory = [rootNode];
 
     while (rootNode.parent_message) {
       rootNode = this.getMessageById(convo, rootNode.parent_message);
+      rootNode.queries = this.getSubQueries(convo, rootNode.id);
       path.push(rootNode.id);
       chatHistory.push(rootNode);
     }
@@ -113,17 +115,25 @@ export class SharedDataService {
       }
     }
 
+    rootNode.queries = this.getSubQueries(convo, rootNode.id);
     const path = [rootNode.id];
     const chatHistory = [rootNode];
 
     while (rootNode.parent_message) {
       rootNode = this.getMessageById(convo, rootNode.parent_message);
+      rootNode.queries = this.getSubQueries(convo, rootNode.id);
       path.push(rootNode.id);
       chatHistory.push(rootNode);
     }
 
     this.currentPath = path;
     return chatHistory;
+  }
+
+  getSubQueries(convo: Conversation, parentId: number): Message[] {
+    return convo.messages.filter(
+      (msg: Message) => msg.parent_message === parentId,
+    );
   }
 }
 
