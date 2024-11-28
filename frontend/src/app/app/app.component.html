@@ -10,7 +10,7 @@
     <mat-nav-list>
       <mat-list-item
         *ngFor="let conversation of conversations; let i = index"
-        (click)="selectConversation(i)"
+        (click)="selectConversationByIndex(i)"
         >{{ conversation.title }}
       </mat-list-item>
     </mat-nav-list>

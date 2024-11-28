@@ -121,15 +121,20 @@ export class AppComponent implements OnInit {
     }
   }
 
-  selectConversation(index: number): void {
+  selectConversationByIndex(index: number): void {
+    this.selectConversation(this.conversations[index].id);
+  }
+
+  selectConversation(id: number): void {
     this.sharedDataService
-      .getConversationById(this.conversations[index].id)
+      .getConversationById(id)
       .subscribe((c: Conversation) => {
-        this.selectedConversation = c;
+        this.selectedConversation = { ...c };
         console.log('Selected conversation:', this.selectedConversation);
-        this.chatHistory =
-          this.sharedDataService.initializeDeepestConversation(c);
-        this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+        this.chatHistory = {
+          ...this.sharedDataService.initializeDeepestConversation(c),
+        };
+        this.initialPath = { ...this.sharedDataService.getCurrentPath() }; // Get the initial path
 
         this.cdr.detectChanges(); // Manually trigger change detection
       });
@@ -185,9 +190,11 @@ export class AppComponent implements OnInit {
         ...msg,
         parent_message: this.initialPath[this.initialPath.length - 1],
       })
-      .subscribe((response: any) => {});
-    this.conversations = this.preprocessData(this.graphData);
-    this.cdr.detectChanges(); // Manually trigger change detection
+      .subscribe((response: any) => {
+        this.selectConversation(this.selectedConversation?.id!);
+      });
+    // this.conversations = this.preprocessData(this.graphData);
+    // this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   onSubQuerySelect(subQuery: any): void {
