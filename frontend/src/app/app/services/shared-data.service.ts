@@ -85,8 +85,8 @@ export class SharedDataService {
       chatHistory.push(rootNode);
     }
 
-    this.currentPath = path;
-    return chatHistory;
+    this.currentPath = path.reverse();
+    return chatHistory.reverse();
   }
 
   getMessageById(convo: Conversation, id: number): Message {
@@ -108,14 +108,15 @@ export class SharedDataService {
 
   // New method to set the path by query
   getMessageHistory(convo: Conversation, targetNode: number): Message[] {
-    let rootNode = convo.messages[0];
+    let rootNode;
     for (const message of convo.messages) {
       if (targetNode === message.id) {
         rootNode = message;
       }
     }
 
-    rootNode.queries = this.getSubQueries(convo, rootNode.id);
+    rootNode = rootNode!;
+    rootNode!.queries = this.getSubQueries(convo, rootNode.id);
     const path = [rootNode.id];
     const chatHistory = [rootNode];
 
@@ -126,8 +127,8 @@ export class SharedDataService {
       chatHistory.push(rootNode);
     }
 
-    this.currentPath = path;
-    return chatHistory;
+    this.currentPath = path.reverse();
+    return chatHistory.reverse();
   }
 
   getSubQueries(convo: Conversation, parentId: number): Message[] {

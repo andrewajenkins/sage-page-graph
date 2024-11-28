@@ -16,7 +16,7 @@
         <p><strong>Sub-queries:</strong></p>
         <div *ngFor="let subQuery of item.queries; let j = index">
           <button mat-button class="outlined-button" (click)="onSubQueryClick(i, j)">
-            {{ subQuery.title }}
+            {{ subQuery.title }} - {{ subQuery.id}}
           </button>
         </div>
       </div>

@@ -59,7 +59,7 @@ export class ChatComponent {
   }
 
   formatQueryResponse(item: any): string {
-    return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
+    return `**Query:** ${item.query} ${item.id}\n\n**Response:** ${item.response}\n\n`;
   }
   onSubQueryClick(parentIndex: number, index: number): void {
     if (
