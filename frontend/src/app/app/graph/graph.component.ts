@@ -127,21 +127,21 @@ export class GraphComponent {
   }
 
   expandNodesAlongPath(nodes: TreeNode[], path: number[]): void {
-    // Collapse all nodes first
-    this.collapseAllNodes(nodes);
-
-    let currentNode = nodes[0];
-    currentNode.expanded = true;
-
-    for (const index of path) {
-      if (currentNode.children && currentNode.children[index]) {
-        currentNode = currentNode.children[index];
-        currentNode.expanded = true;
-      }
-    }
-
-    // Set the selected node to the last node in the path
-    this.selectedNode = currentNode;
+    // // Collapse all nodes first
+    // this.collapseAllNodes(nodes);
+    //
+    // let currentNode = nodes[0];
+    // currentNode.expanded = true;
+    //
+    // for (const index of path) {
+    //   if (currentNode.children && currentNode.children[index]) {
+    //     currentNode = currentNode.children[index];
+    //     currentNode.expanded = true;
+    //   }
+    // }
+    //
+    // // Set the selected node to the last node in the path
+    // this.selectedNode = currentNode;
   }
   collapseAllNodes(nodes: TreeNode[]): void {
     nodes.forEach((node) => {

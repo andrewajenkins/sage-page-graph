@@ -110,14 +110,19 @@ export class AppComponent implements OnInit {
   }
   deleteCurrentConversation(): void {
     if (this.selectedConversation) {
-      const path = this.sharedDataService.currentPath;
-      console.log('Current path:', path);
-      const index = path[0];
-      console.log('Index:', index);
-      // this.conversations.indexOf(this.selectedConversation);
-      if (index > -1) {
-        this.removeConversation(index, new Event('delete'));
-      }
+      const index = this.conversations.findIndex(
+        (c) => c.id === this.selectedConversation?.id,
+      );
+      delete this.conversations[index];
+      this.conversations.length > 0
+        ? this.selectConversation(this.conversations[0].id)
+        : null;
+      this.chatHistory = this.sharedDataService.initializeDeepestConversation(
+        this.selectedConversation!,
+      );
+      this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+
+      this.cdr.detectChanges(); // Manually trigger change detection
     }
   }
 
@@ -129,12 +134,11 @@ export class AppComponent implements OnInit {
     this.sharedDataService
       .getConversationById(id)
       .subscribe((c: Conversation) => {
-        this.selectedConversation = { ...c };
+        this.selectedConversation = c;
         console.log('Selected conversation:', this.selectedConversation);
-        this.chatHistory = {
-          ...this.sharedDataService.initializeDeepestConversation(c),
-        };
-        this.initialPath = { ...this.sharedDataService.getCurrentPath() }; // Get the initial path
+        this.chatHistory =
+          this.sharedDataService.initializeDeepestConversation(c);
+        this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
 
         this.cdr.detectChanges(); // Manually trigger change detection
       });
