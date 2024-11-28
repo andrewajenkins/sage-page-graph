@@ -69,7 +69,6 @@ export class AppComponent implements OnInit {
           this.selectedConversation = c;
           this.chatHistory = this.sharedDataService.initializeDeepestConversation(c);
           this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
-          this.selectedConversation = this.graphData[0]; // Initialize selectedConversation
         });
       }
     });

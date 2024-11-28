@@ -18,6 +18,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
 import { SharedDataService } from '../services/shared-data.service';
+import { Conversation } from '../app.component';
 @Component({
   selector: 'app-graph',
   standalone: true,
@@ -63,7 +64,7 @@ export class GraphComponent {
     console.log('ch ch ch changes:', changes);
     if (changes['item'] && this.item) {
       console.log('Item changed');
-      this.initData();
+      this.initData(this.item);
     }
     if (changes['item'] && !this.item) {
       console.log('Item cleared');
@@ -75,18 +76,40 @@ export class GraphComponent {
     }
   }
 
-  initData(): void {
-    this.treeData = this.convertToTreeNodes([this.item]);
+  initData(c: Conversation): void {
+    this.treeData = this.convertToTreeNodes(c);
     this.dataSource.data = this.treeData;
     this.expandNodesAlongPath(this.treeData, this.initialPath);
   }
 
-  convertToTreeNodes(data: any): TreeNode[] {
-    return data.map((item: any) => ({
-      label: item.title,
-      data: { query: item.query, response: item.response },
-      children: this.convertToTreeNodes(item.queries),
-    }));
+  convertToTreeNodes(conversation: Conversation): TreeNode[] {
+    const messages = conversation.messages;
+
+    // Step 1: Create a map for quick lookup of messages by id
+    const messageMap: { [id: number]: TreeNode } = {};
+    messages.forEach((message) => {
+      messageMap[message.id] = {
+        label: message.query,
+        data: { query: message.query, response: message.response },
+        children: [], // Initialize empty children array
+      };
+    });
+
+    // Step 2: Build the tree by assigning children to their parents
+    const roots: TreeNode[] = [];
+    messages.forEach((message) => {
+      const treeNode = messageMap[message.id];
+      if (message.parent_message) {
+        // If the message has a parent, add it to the parent's children
+        messageMap[message.parent_message].children?.push(treeNode);
+      } else {
+        // If no parent, it's a root node
+        roots.push(treeNode);
+      }
+    });
+
+    // Step 3: Return the root nodes (the full tree)
+    return roots;
   }
 
   onNodeSelect(event: any): void {
