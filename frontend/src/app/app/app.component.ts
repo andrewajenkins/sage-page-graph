@@ -8,7 +8,8 @@ import { AngularSplitModule } from 'angular-split';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'; // Import MatButtonModule
-import { MatMenuModule } from '@angular/material/menu'; // Import MatMenuModule
+import { MatMenuModule } from '@angular/material/menu';
+import { TreeNode } from 'primeng/api'; // Import MatMenuModule
 
 export interface Conversation {
   id: number;
@@ -49,7 +50,7 @@ export class AppComponent implements OnInit {
   graphData: Conversation[] = [];
 
   // a linear chat history displayed in the chat window, derived from a conversation graph
-  chatHistory: Conversation[] = [];
+  chatHistory: Message[] = [];
   conversations: Conversation[] = [];
   initialPath: number[] = [];
 
@@ -129,18 +130,17 @@ export class AppComponent implements OnInit {
           this.sharedDataService.initializeDeepestConversation(c);
         this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
 
-        // Update the graph to open to the deepest conversation
-        this.sharedDataService.setPathByQuery(
-          this.selectedConversation.messages[0].query,
-        );
         this.cdr.detectChanges(); // Manually trigger change detection
       });
   }
 
   onNodeSelect(node: any): void {
     console.log('Node selected:', node);
-    this.sharedDataService.setPathByQuery(node.query);
-    this.chatHistory = this.findPath(this.graphData, node.query);
+
+    this.chatHistory = this.sharedDataService.getMessageHistory(
+      this.selectedConversation!,
+      node.id,
+    );
     this.initialPath = this.sharedDataService.getCurrentPath();
     console.log('Path to node:', this.chatHistory);
     console.log('Initial path:', this.initialPath);
@@ -183,14 +183,14 @@ export class AppComponent implements OnInit {
     this.cdr.detectChanges(); // Manually trigger change detection
   }
   onSubQuerySelect(subQuery: any): void {
-    console.log('Sub-query selected:', subQuery);
-    this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
-    this.selectedConversation = this.sharedDataService.getCurrentConversation();
-    this.chatHistory = this.sharedDataService.getChatHistory();
-    this.initialPath = this.sharedDataService.getCurrentPath();
-    console.log('Updated chat history:', this.chatHistory);
-    console.log('Updated initial path:', this.initialPath);
-    this.cdr.detectChanges(); // Manually trigger change detection
+    // console.log('Sub-query selected:', subQuery);
+    // this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
+    // this.selectedConversation = this.sharedDataService.getCurrentConversation();
+    // this.chatHistory = this.sharedDataService.getChatHistory();
+    // this.initialPath = this.sharedDataService.getCurrentPath();
+    // console.log('Updated chat history:', this.chatHistory);
+    // console.log('Updated initial path:', this.initialPath);
+    // this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   private preprocessData(graphData: Conversation[]) {

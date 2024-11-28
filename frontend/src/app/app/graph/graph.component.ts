@@ -90,7 +90,11 @@ export class GraphComponent {
     messages.forEach((message) => {
       messageMap[message.id] = {
         label: message.query,
-        data: { query: message.query, response: message.response },
+        data: {
+          id: message.id,
+          query: message.query,
+          response: message.response,
+        },
         children: [], // Initialize empty children array
       };
     });
@@ -116,6 +120,7 @@ export class GraphComponent {
     console.log(event);
     // convert event to graph node
     this.nodeSelect.emit({
+      id: event.node.data.id,
       title: event.node.label,
       query: event.node.data.query,
     });

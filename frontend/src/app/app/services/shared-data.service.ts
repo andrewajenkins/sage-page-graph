@@ -66,7 +66,7 @@ export class SharedDataService {
     this.currentPath.push(index);
   }
 
-  initializeDeepestConversation(convo: Conversation): any[] {
+  initializeDeepestConversation(convo: Conversation): Message[] {
     let rootNode = convo.messages[0];
     for (const message of convo.messages) {
       if (new Date(message.updated_at) > new Date(rootNode.updated_at)) {
@@ -78,7 +78,7 @@ export class SharedDataService {
     const chatHistory = [rootNode];
 
     while (rootNode.parent_message) {
-      rootNode = this.getMessageById(convo, rootNode.parent_message)
+      rootNode = this.getMessageById(convo, rootNode.parent_message);
       path.push(rootNode.id);
       chatHistory.push(rootNode);
     }
@@ -104,39 +104,28 @@ export class SharedDataService {
     return this.data[this.currentPath[0]];
   }
 
-  // New method to find the path by query
-  findPathByQuery(
-    data: any[],
-    targetQuery: string,
-    path: number[] = [],
-  ): number[] {
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      const newPath = [...path, i];
-      if (item.query === targetQuery) {
-        return newPath;
-      }
-      if (item.queries && item.queries.length > 0) {
-        const result = this.findPathByQuery(item.queries, targetQuery, newPath);
-        if (result.length > 0) {
-          return result;
-        }
-      }
-    }
-    return [];
-  }
-
   // New method to set the path by query
-  setPathByQuery(targetQuery: string): void {
-    const path = this.findPathByQuery(this.data, targetQuery);
-    if (path.length > 0) {
-      this.currentPath = path;
-    } else {
-      console.error('Query not found in data', this.data, targetQuery);
+  getMessageHistory(convo: Conversation, targetNode: number): Message[] {
+    let rootNode = convo.messages[0];
+    for (const message of convo.messages) {
+      if (targetNode === message.id) {
+        rootNode = message;
+      }
     }
+
+    const path = [rootNode.id];
+    const chatHistory = [rootNode];
+
+    while (rootNode.parent_message) {
+      rootNode = this.getMessageById(convo, rootNode.parent_message);
+      path.push(rootNode.id);
+      chatHistory.push(rootNode);
+    }
+
+    this.currentPath = path;
+    return chatHistory;
   }
 }
-
 
 // private data = [
 //   {
