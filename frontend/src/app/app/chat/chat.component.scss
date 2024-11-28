@@ -31,6 +31,7 @@ textarea {
   flex: 1;
   margin-right: 10px;
 }
+
 button.mat-button {
   margin: 4px 0;
   background-color: #e0f7fa;
@@ -39,6 +40,11 @@ button.mat-button {
   border-radius: 4px;
   padding: 8px 16px;
   text-transform: none;
+}
+.outlined-button {
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Faint outline */
+  border-radius: 4px; /* Optional: Keep Material Design's rounded corners */
+  padding: 8px 16px; /* Match Angular Material's default padding */
 }
 
 button.mat-button:hover {
