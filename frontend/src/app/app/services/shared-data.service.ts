@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
   providedIn: 'root',
 })
 export class SharedDataService {
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = '/api';
   queryAppended = new EventEmitter<void>();
   currentPath: number[] = [];
   data: any[] = [];

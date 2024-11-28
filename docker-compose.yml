@@ -47,6 +47,8 @@ services:
       dockerfile: tools/docker/frontend/Dockerfile
     ports:
       - "80:80"
+    depends_on:
+      - backend
     networks:
       - app-network
  

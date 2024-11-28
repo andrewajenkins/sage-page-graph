@@ -17,17 +17,17 @@ COPY ./frontend ./
 RUN npm run build
 
 # Use an official Nginx runtime as a parent image
-FROM nginx:latest
-
-# Copy the Angular build from the Node image to the Nginx image
-COPY --from=builder /app/dist/sage-page-graph /usr/share/nginx/html
-
-# Copy the Nginx configuration file to the container
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+#FROM nginx:latest
+#
+## Copy the Angular build from the Node image to the Nginx image
+#COPY --from=builder /app/dist/sage-page-graph /usr/share/nginx/html
+#
+## Copy the Nginx configuration file to the container
+#COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 for the web server
 EXPOSE 80
 
 # Serve the Angular app with an HTTP server (or nginx, depending on your setup)
-#CMD ["npm", "start"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
+#CMD ["nginx", "-g", "daemon off;"]
