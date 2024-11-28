@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -30,11 +31,11 @@ import { Message } from '../app.component';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent {
+export class ChatComponent implements OnChanges {
   @Input() chatHistory: any;
   @Input() initialPath: number[] = [];
   @Output() subQuerySelect = new EventEmitter<any>();
-  @Output() conversationAdded = new EventEmitter<void>();
+  @Output() messageAdded = new EventEmitter<Message>();
 
   machines = ['Machine 1', 'Machine 2', 'Machine 3'];
   selectedMachine = this.machines[0];
@@ -106,20 +107,8 @@ export class ChatComponent {
   }
   approveResponse(): void {
     if (this.pendingResponse) {
-      const isFirstConversation =
-        this.dataService.getChatHistory().length === 0;
-
-      this.dataService.appendQuery(this.pendingResponse); // Append to data service
-      this.chatHistory = this.dataService.getChatHistory(); // Update chat history
-      this.onSubQueryClick(
-        this.dataService.getCurrentPath().length - 1,
-        this.dataService.getCurrentPath().length - 1,
-      ); // Select the new node
-
-      if (isFirstConversation) {
-        this.conversationAdded.emit(); // Emit event if it's the first conversation
-      }
-
+      this.chatHistory.push(this.pendingResponse);
+      this.messageAdded.emit(this.pendingResponse);
       this.pendingResponse = null;
     }
   }
@@ -127,6 +116,7 @@ export class ChatComponent {
   deleteResponse(): void {
     this.pendingResponse = null;
   }
+
   openNodesAlongPath(path: number[]): void {
     // let currentNode = this.dataService.getCurrentPath();
     // this.chatHistory = [currentNode[0]];

@@ -30,7 +30,7 @@
           [chatHistory]="chatHistory"
           [initialPath]="initialPath"
           (subQuerySelect)="onSubQuerySelect($event)"
-          (conversationAdded)="onConversationAdded()"
+          (messageAdded)="onMessageAdded($event)"
         ></app-chat>
       </as-split-area>
     </as-split>

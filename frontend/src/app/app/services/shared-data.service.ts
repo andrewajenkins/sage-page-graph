@@ -26,14 +26,11 @@ export class SharedDataService {
   //   return this.data;
   // }
 
-  getChatHistory(): any[] {
-    let queriesList = this.data;
-    const chatHistory = [];
-    for (const index of this.currentPath) {
-      chatHistory.push(queriesList[index]);
-      queriesList = queriesList[index].queries;
-    }
-    return chatHistory;
+  addChatMessage(convoId: number, message: Message): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiUrl}/conversations/${convoId}/messages/`,
+      { ...message, conversation_id: convoId },
+    );
   }
 
   getCurrentQueriesList(): any {

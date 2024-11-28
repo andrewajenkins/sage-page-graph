@@ -19,6 +19,7 @@ export interface Conversation {
 
 export interface Message {
   id: number;
+  conversation_id: number; // The conversation this message belongs to - for backend
   title: string;
   query: string;
   response: string;
@@ -178,10 +179,17 @@ export class AppComponent implements OnInit {
 
     this.cdr.detectChanges(); // Manually trigger change detection
   }
-  onConversationAdded(): void {
+  onMessageAdded(msg: Message): void {
+    this.sharedDataService
+      .addChatMessage(this.selectedConversation?.id!, {
+        ...msg,
+        parent_message: this.initialPath[this.initialPath.length - 1],
+      })
+      .subscribe((response: any) => {});
     this.conversations = this.preprocessData(this.graphData);
     this.cdr.detectChanges(); // Manually trigger change detection
   }
+
   onSubQuerySelect(subQuery: any): void {
     // console.log('Sub-query selected:', subQuery);
     // this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
