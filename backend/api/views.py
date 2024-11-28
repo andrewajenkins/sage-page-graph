@@ -15,7 +15,7 @@ def hello_world(request):
 
 
 class ConversationTitleListView(generics.ListAPIView):
-    queryset = Conversation.objects.all()
+    queryset = Conversation.objects.all().order_by('-updated_at')
     serializer_class = ConversationTitleSerializer
 
 
@@ -26,24 +26,38 @@ class ConversationDetailView(generics.RetrieveAPIView):
 
 class MessageCreateView(generics.CreateAPIView):
     """
-    View to handle creating a new message in a conversation.
+    View to handle creating a new message and optionally a new conversation.
     """
     serializer_class = MessageSerializer
 
     def create(self, request, *args, **kwargs):
         convo_id = kwargs.get('convo_id')
-        # Ensure the conversation exists
-        conversation = get_object_or_404(Conversation, pk=convo_id)
-        from pprint import pprint
-        pprint(vars(conversation))
-        print(convo_id)
+
+        # If no conversation ID is provided, create a new conversation
+        if convo_id is None:
+            # Create a new conversation (you can add logic to customize its properties)
+            conversation = Conversation.objects.create(title=request.data["title"])
+        else:
+            # Ensure the conversation exists
+            conversation = get_object_or_404(Conversation, pk=convo_id)
+
         # Add the conversation ID to the incoming data
         data = request.data.copy()
-        data['conversation'] = convo_id
+        data['conversation'] = conversation.id
 
         # Use the serializer to validate and save the message
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # Include the conversation details in the response
+        response_data = {
+            "conversation": {
+                "id": conversation.id,
+                "created_at": conversation.created_at,  # Assuming Conversation has a timestamp field
+                "updated_ad": conversation.updated_at,
+            },
+            "message": serializer.data
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
+

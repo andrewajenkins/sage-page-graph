@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'; // Import MatButtonModule
 import { MatMenuModule } from '@angular/material/menu';
-import { TreeNode } from 'primeng/api'; // Import MatMenuModule
+import { TreeNode } from 'primeng/api';
+import { OpenAIService } from './services/openai.service'; // Import MatMenuModule
 
 export interface Conversation {
   id: number;
@@ -57,6 +58,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private sharedDataService: SharedDataService,
+    private aiService: OpenAIService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -89,25 +91,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  findPath(data: any[], targetQuery: string, path: any[] = []): any[] {
-    for (const item of data) {
-      const newPath = [...path, item];
-      console.log('findPath -> newPath', newPath);
-      if (item.query === targetQuery) {
-        console.log('findPath -> Found path:', newPath);
-        return newPath;
-      }
-      if (item.queries && item.queries.length > 0) {
-        const result = this.findPath(item.queries, targetQuery, newPath);
-        if (result.length > 0) {
-          console.log('findPath -> Found path:', result);
-          return result;
-        }
-      }
-    }
-    console.log('findPath -> No path found');
-    return [];
-  }
   deleteCurrentConversation(): void {
     if (this.selectedConversation) {
       const index = this.conversations.findIndex(
@@ -135,6 +118,10 @@ export class AppComponent implements OnInit {
       this.sharedDataService
         .getConversationById(id)
         .subscribe((c: Conversation) => {
+          if (this.conversations.findIndex((conv) => conv.id === c.id) === -1) {
+            this.conversations.unshift(c);
+            this.conversations = [...this.conversations];
+          }
           this.selectedConversation = c;
           console.log('Selected conversation:', this.selectedConversation);
           this.chatHistory =
@@ -171,14 +158,26 @@ export class AppComponent implements OnInit {
   }
 
   onMessageAdded(msg: Message): void {
-    this.sharedDataService
-      .addChatMessage(this.selectedConversation?.id!, {
-        ...msg,
-        parent_message: this.initialPath[this.initialPath.length - 1],
-      })
-      .subscribe((response: any) => {
-        this.selectConversation(this.selectedConversation?.id!);
-      });
+    if (this.selectedConversation) {
+      this.sharedDataService
+        .addChatMessage(this.selectedConversation?.id!, {
+          ...msg,
+          parent_message: this.initialPath[this.initialPath.length - 1],
+        })
+        .subscribe((response: any) => {
+          this.selectConversation(this.selectedConversation?.id!);
+        });
+    } else {
+      // this.aiService
+      //   .generateSummary(response.message.query)
+      //   .subscribe((response) => {
+      this.sharedDataService
+        .addFirstChatMessage(msg)
+        .subscribe((response: any) => {
+          this.selectConversation(response.conversation.id!);
+        });
+      //   });
+    }
     // this.conversations = this.preprocessData(this.graphData);
     // this.cdr.detectChanges(); // Manually trigger change detection
   }
@@ -192,9 +191,5 @@ export class AppComponent implements OnInit {
     // console.log('Updated chat history:', this.chatHistory);
     // console.log('Updated initial path:', this.initialPath);
     // this.cdr.detectChanges(); // Manually trigger change detection
-  }
-
-  private preprocessData(graphData: Conversation[]) {
-    return graphData; //.map((c) => c.messages[0].title)
   }
 }

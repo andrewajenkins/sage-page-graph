@@ -22,9 +22,6 @@ export class SharedDataService {
   getConversationById(id: number): Observable<Conversation> {
     return this.http.get<Conversation>(`${this.apiUrl}/conversations/${id}/`);
   }
-  // getData() {
-  //   return this.data;
-  // }
 
   addChatMessage(convoId: number, message: Message): Observable<void> {
     return this.http.post<void>(
@@ -33,20 +30,11 @@ export class SharedDataService {
     );
   }
 
-  getCurrentQueriesList(): any {
-    let queriesList = this.data;
-    for (const index of this.currentPath) {
-      queriesList = queriesList[index].queries;
-    }
-    return queriesList;
-  }
-
-  appendQuery(query: any): void {
-    const currentQueriesList = this.getCurrentQueriesList();
-    console.log('Current queries list:', currentQueriesList);
-    currentQueriesList.push(query);
-    this.appendCurrentPath(currentQueriesList.length - 1);
-    this.queryAppended.emit();
+  addFirstChatMessage(message: Message): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/conversations/messages/`, {
+      ...message,
+      parent_message: null,
+    });
   }
 
   selectNode(path: number[]): void {
@@ -56,11 +44,6 @@ export class SharedDataService {
   getCurrentPath(): number[] {
     console.log('Getting current path:', this.currentPath);
     return this.currentPath;
-  }
-
-  appendCurrentPath(index: number): void {
-    console.log('Appending current path:', this.currentPath);
-    this.currentPath.push(index);
   }
 
   initializeDeepestConversation(convo: Conversation): Message[] {

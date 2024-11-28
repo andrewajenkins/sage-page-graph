@@ -60,7 +60,7 @@ export class ChatComponent implements OnChanges {
   }
 
   formatQueryResponse(item: any): string {
-    return `**Query:** ${item.query} ${item.id}\n\n**Response:** ${item.response}\n\n`;
+    return `**Title:** ${item.title}\n\n**Query:** ${item.query} ${item.id}\n\n**Response:** ${item.response}\n\n`;
   }
   onSubQueryClick(parentIndex: number, index: number): void {
     if (
@@ -94,7 +94,7 @@ export class ChatComponent implements OnChanges {
     this.openAIService.sendQuery(this.query).subscribe((response: any) => {
       console.log('response', response);
       newQuery.response = response.choices[0].message.content;
-      const summaryPrompt = `Summarize the following query and response in 3-5 words:\nQuery: ${newQuery.query}\nResponse: ${newQuery.response}`;
+      const summaryPrompt = `Summarize the following query in 3-5 words:\nQuery: ${newQuery.query}`;
       this.openAIService
         .generateSummary(summaryPrompt)
         .subscribe((summaryResponse: any) => {
