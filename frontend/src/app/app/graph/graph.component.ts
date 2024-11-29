@@ -127,33 +127,38 @@ export class GraphComponent {
   }
 
   expandNodesAlongPath(nodes: TreeNode[], path: number[]): void {
-    // // Collapse all nodes first
-    // this.collapseAllNodes(nodes);
-    //
-    // let currentNode = nodes[0];
-    // currentNode.expanded = true;
-    //
-    // for (const index of path) {
-    //   if (currentNode.children && currentNode.children[index]) {
-    //     currentNode = currentNode.children[index];
-    //     currentNode.expanded = true;
-    //   }
-    // }
-    //
-    // // Set the selected node to the last node in the path
-    // this.selectedNode = currentNode;
+    if (nodes.length === 0) return;
+
+    // Collapse all nodes first
+    this.collapseAllNodes(nodes);
+
+    let currentNode = nodes[0];
+    currentNode.expanded = true;
+
+    for (const id of path) {
+      if (!currentNode.children) {
+        break;
+      }
+      const index = currentNode.children.findIndex(
+        (child) => child.data.id === id,
+      );
+      if (index !== -1) {
+        currentNode = currentNode.children[index];
+        currentNode.expanded = true;
+      }
+    }
+
+    // Set the selected node to the last node in the path
+    this.selectedNode = currentNode;
   }
   collapseAllNodes(nodes: TreeNode[]): void {
     nodes.forEach((node) => {
       node.expanded = false;
+      this.dataSource.data = [];
+      this.dataSource.data = this.treeData;
       if (node.children) {
         this.collapseAllNodes(node.children);
       }
     });
-  }
-  addNewConversation(): void {
-    this.selectedNode = null; // Unselect everything
-    this.treeData = []; // Clear the graph
-    this.nodeSelect.emit(null); // Emit null to indicate no selection
   }
 }

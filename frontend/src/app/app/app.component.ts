@@ -183,13 +183,16 @@ export class AppComponent implements OnInit {
   }
 
   onSubQuerySelect(subQuery: any): void {
-    // console.log('Sub-query selected:', subQuery);
+    console.log('Sub-query selected:', subQuery);
     // this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
     // this.selectedConversation = this.sharedDataService.getCurrentConversation();
-    // this.chatHistory = this.sharedDataService.getChatHistory();
-    // this.initialPath = this.sharedDataService.getCurrentPath();
-    // console.log('Updated chat history:', this.chatHistory);
-    // console.log('Updated initial path:', this.initialPath);
-    // this.cdr.detectChanges(); // Manually trigger change detection
+    this.chatHistory = this.sharedDataService.getMessageHistory(
+      this.selectedConversation!,
+      subQuery.subQuery.id,
+    );
+    this.initialPath = this.sharedDataService.getCurrentPath();
+    console.log('Updated chat history:', this.chatHistory);
+    console.log('Updated initial path:', this.initialPath);
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 }
