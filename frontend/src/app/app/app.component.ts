@@ -13,6 +13,8 @@ import { DialogModule } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { TokenService } from './services/token.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 export interface Conversation {
   id: number;
@@ -65,6 +67,8 @@ export class AppComponent implements OnInit {
   constructor(
     private sharedDataService: SharedDataService,
     private tokenService: TokenService,
+    private router: Router,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -213,5 +217,10 @@ export class AppComponent implements OnInit {
     console.log('Token saved:', this.token);
     this.tokenService.clearToken();
     this.token = '';
+  }
+
+  logOut() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

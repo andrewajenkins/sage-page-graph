@@ -1,10 +1,22 @@
-### Test hello_world endpoint
-GET http://localhost:8000/api/hello/
+### Test login endpoint
+# @name login
+POST http://localhost:8000/api/token/
 Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+### Store access and refresh tokens
+@token = {{ login.response.body.access }}
+@refresh = {{ login.response.body.refresh }}
 
 ### Test ConversationListCreateView endpoint (GET)
 GET http://localhost:8000/api/conversations/titles/
 Accept: application/json
+Authorization: Bearer {{ token }}
 
 ### Teest ConversationDetailView endpoint (GET)
 GET http://localhost:8000/api/conversations/12/

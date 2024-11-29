@@ -23,9 +23,17 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
   }
 
   saveRefreshToken(refreshToken: string): void {
     localStorage.setItem('refresh_token', refreshToken);
+  }
+
+  // Check if a valid token exists
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('auth_token');
+    // You can add token validation logic here, e.g., decoding the token and checking expiry
+    return !!token; // Returns true if token exists, false otherwise
   }
 }
