@@ -89,7 +89,7 @@ export class GraphComponent {
     const messageMap: { [id: number]: TreeNode } = {};
     messages.forEach((message) => {
       messageMap[message.id] = {
-        label: message.query,
+        label: message.title,
         data: {
           id: message.id,
           query: message.query,

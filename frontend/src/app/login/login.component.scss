@@ -1,0 +1,32 @@
+/* Center the container in the viewport */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+/* Style the form */
+.login-form {
+  display: flex;
+  flex-direction: column; /* Stack the form fields vertically */
+  gap: 16px; /* Add space between fields */
+  width: 300px; /* Optional: Set a fixed width for the form */
+  text-align: center; /* Center the button and text */
+}
+
+/* Fix mat-form-field sizing */
+mat-form-field {
+  width: 100%; /* Ensure the form field takes the full width of the container */
+}
+
+input.mat-input-element {
+  height: auto; /* Let the input adjust to content and padding */
+  padding: 20px 40px; /* Add padding to avoid cutting off the placeholder */
+  font-size: 14px; /* Ensure a readable font size */
+  box-sizing: border-box; /* Include padding and border in width/height */
+}
+
+mat-label {
+  font-size: 14px; /* Optional: Adjust font size of the placeholder */
+}

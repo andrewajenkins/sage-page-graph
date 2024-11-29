@@ -9,6 +9,10 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { DialogModule } from 'primeng/dialog';
+import { Button } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { TokenService } from './services/token.service';
 
 export interface Conversation {
   id: number;
@@ -40,6 +44,9 @@ export interface Message {
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    DialogModule,
+    Button,
+    FormsModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -52,9 +59,12 @@ export class AppComponent implements OnInit {
   chatHistory: Message[] = [];
   conversations: Conversation[] = [];
   initialPath: number[] = [];
+  settingsModalVisible = false;
+  token: string = '';
 
   constructor(
     private sharedDataService: SharedDataService,
+    private tokenService: TokenService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -168,24 +178,16 @@ export class AppComponent implements OnInit {
           this.selectConversation(this.selectedConversation?.id!);
         });
     } else {
-      // this.aiService
-      //   .generateSummary(response.message.query)
-      //   .subscribe((response) => {
       this.sharedDataService
         .addFirstChatMessage(msg)
         .subscribe((response: any) => {
           this.selectConversation(response.conversation.id!);
         });
-      //   });
     }
-    // this.conversations = this.preprocessData(this.graphData);
-    // this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   onSubQuerySelect(subQuery: any): void {
     console.log('Sub-query selected:', subQuery);
-    // this.sharedDataService.setPathByQuery(subQuery.subQuery.query);
-    // this.selectedConversation = this.sharedDataService.getCurrentConversation();
     this.chatHistory = this.sharedDataService.getMessageHistory(
       this.selectedConversation!,
       subQuery.subQuery.id,
@@ -194,5 +196,22 @@ export class AppComponent implements OnInit {
     console.log('Updated chat history:', this.chatHistory);
     console.log('Updated initial path:', this.initialPath);
     this.cdr.detectChanges(); // Manually trigger change detection
+  }
+
+  manageToken() {
+    this.settingsModalVisible = true;
+  }
+
+  saveToken($event: MouseEvent) {
+    this.settingsModalVisible = false;
+    console.log('Token saved:', this.token);
+    this.tokenService.saveToken(this.token);
+  }
+
+  clearToken() {
+    this.settingsModalVisible = false;
+    console.log('Token saved:', this.token);
+    this.tokenService.clearToken();
+    this.token = '';
   }
 }

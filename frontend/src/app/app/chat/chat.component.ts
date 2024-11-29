@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { OpenAIService } from '../services/openai.service';
 import { SharedDataService } from '../services/shared-data.service';
 import { Message } from '../app.component';
+import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -27,6 +28,7 @@ import { Message } from '../app.component';
     FormsModule,
     MatInputModule,
     MatButtonModule,
+    DividerModule,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -37,7 +39,7 @@ export class ChatComponent implements OnChanges {
   @Output() subQuerySelect = new EventEmitter<any>();
   @Output() messageAdded = new EventEmitter<Message>();
 
-  machines = ['Machine 1', 'Machine 2', 'Machine 3'];
+  machines = ['Machine 1'];
   selectedMachine = this.machines[0];
   query!: string | null;
   pendingResponse: any = null;
@@ -60,7 +62,7 @@ export class ChatComponent implements OnChanges {
   }
 
   formatQueryResponse(item: any): string {
-    return `**Title:** ${item.title}\n\n**Query:** ${item.query} ${item.id}\n\n**Response:** ${item.response}\n\n`;
+    return `**Query:** ${item.query}\n\n**Response:** ${item.response}\n\n`;
   }
   onSubQueryClick(parentIndex: number, index: number): void {
     if (

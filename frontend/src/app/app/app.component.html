@@ -1,5 +1,5 @@
 <mat-sidenav-container class="example-container">
-  <mat-sidenav mode="side" opened>
+  <mat-sidenav mode="side" opened [disableClose]="true">
     <h3>Sage Page App</h3>
     <button mat-button (click)="addNewConversation()">
       Add New Conversation
@@ -15,9 +15,48 @@
         >{{ conversation?.title }}
       </mat-list-item>
     </mat-nav-list>
+    <div class="modal-button">
+      <p-button (onClick)="manageToken()" label="Manage token" />
+      <p-dialog
+        header="Manage Token"
+        [modal]="true"
+        [(visible)]="settingsModalVisible"
+        [style]="{ width: '25rem' }"
+      >
+        <span class="p-text-secondary block mb-5">Add an OpenAI token:</span>
+        <div class="flex align-items-center gap-3 mb-3">
+          <label for="app_token" class="font-semibold w-6rem">Token</label>
+          <input
+            pInputText
+            id="app_token"
+            class="flex-auto"
+            autocomplete="off"
+            [(ngModel)]="token"
+          />
+        </div>
+        <div class="flex justify-content-end gap-2">
+          <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="settingsModalVisible = false"
+          />
+          <p-button label="Save" (onClick)="saveToken($event)" />
+          <p-button
+            label="Clear"
+            (onClick)="clearToken()"
+            severity="secondary"
+          ></p-button>
+        </div>
+      </p-dialog>
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <as-split [direction]="'horizontal'" [gutterSize]="10" [unit]="'percent'" [style]="'padding: 10px 10px'">
+    <as-split
+      [direction]="'horizontal'"
+      [gutterSize]="10"
+      [unit]="'percent'"
+      [style]="'padding: 10px 10px'"
+    >
       <as-split-area [size]="50">
         <app-graph
           [item]="selectedConversation"

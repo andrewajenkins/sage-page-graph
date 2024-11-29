@@ -1,6 +1,7 @@
 # urls.py
 from django.urls import path
-from .views import ConversationDetailView, ConversationTitleListView, hello_world, MessageCreateView, ConvoDeleteView
+from .views import ConversationDetailView, ConversationTitleListView, hello_world, MessageCreateView, ConvoDeleteView, \
+    LoginView
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -12,6 +13,7 @@ urlpatterns = [
     path('hello/', hello_world, name='hello-world'),
     path('conversations/<int:convo_id>/messages/', MessageCreateView.as_view(), name='message-create'),
     path('conversations/messages/', MessageCreateView.as_view(), name='new-message-create'),
-    path('conversations/<int:convo_id>/delete/', ConvoDeleteView.as_view(), name='convo-delete')
+    path('conversations/<int:convo_id>/delete/', ConvoDeleteView.as_view(), name='convo-delete'),
+    path('login/', LoginView.as_view(), name='login'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

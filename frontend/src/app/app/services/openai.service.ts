@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpenAIService {
   private apiUrl = 'https://api.openai.com/v1/chat/completions';
-  private apiKey =
-    'sk-SzZObcdBLVLoJirPtMspaOHByNkkNeF6i1ntLl6rBGT3BlbkFJanHcN0tszxpSUX9WoaESWXo--RvwoRB9vO49oOP1EA';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+  ) {}
 
   sendQuery(prompt: string): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.getToken()}`,
     };
     const body = {
       model: 'gpt-4o',
@@ -34,7 +36,7 @@ export class OpenAIService {
   generateSummary(prompt: string): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.getToken()}`,
     };
     const body = {
       model: 'gpt-3.5-turbo',
@@ -49,5 +51,16 @@ export class OpenAIService {
       max_tokens: 10, // Limit tokens for summary
     };
     return this.http.post(this.apiUrl, body, { headers });
+  }
+
+  getToken(): string | null {
+    const token = this.tokenService.getToken();
+    if (!token) {
+      alert(
+        'No token found. Please enter your OpenAI API token using the "Manage token" button.',
+      );
+      throw new Error('No token found');
+    }
+    return token;
   }
 }
