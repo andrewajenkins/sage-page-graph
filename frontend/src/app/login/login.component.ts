@@ -32,47 +32,25 @@ export class LoginComponent {
   ) {}
 
   onSubmit(): void {
-    this.http
-      .post('/api/token/', {
-        username: this.username,
-        password: this.password,
-      })
-      .subscribe({
-        next: (response: any) => {
-          // Save the JWT token
-          const token = response.access;
-          const refreshToken = response.refresh;
+    this.authService.login(this.username, this.password).subscribe({
+      next: (response: any) => {
+        // Assuming authService handles token saving internally
+        console.log('Login successful!');
 
-          this.authService.saveToken(token);
-          this.authService.saveRefreshToken(refreshToken);
+        // Decode the token to extract user group information (if needed)
+        // const decodedToken = this.authService.decodeToken();
+        // if (decodedToken) {
+        //   console.log('Logged in as:', decodedToken.username);
+        //   console.log('User group:', decodedToken.group);
+        // }
 
-          // Optionally, decode the token to extract user group information
-          const decodedToken = this.decodeToken(token);
-          console.log('Logged in as:', decodedToken.username);
-          console.log('User group:', decodedToken.group);
-
-          // Redirect to the main app page
-          this.router.navigate(['/app']);
-        },
-        error: (err) => {
-          console.error('Login error:', err);
-          alert('Invalid username or password');
-        },
-      });
-  }
-
-  /**
-   * Utility method to decode a JWT token
-   * @param token The JWT token
-   * @returns The decoded token payload
-   */
-  private decodeToken(token: string): any {
-    try {
-      const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
-    } catch (e) {
-      console.error('Error decoding token:', e);
-      return null;
-    }
+        // Redirect to the main app page
+        this.router.navigate(['/app']);
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        alert('Invalid username or password');
+      },
+    });
   }
 }

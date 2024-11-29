@@ -18,6 +18,17 @@ from .serializers import (
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework.response import Response
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        # Add custom data to the response
+        response.data["user_message"] = "Token refreshed successfully!"
+        return response
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
