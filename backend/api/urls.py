@@ -3,12 +3,12 @@ from django.urls import path
 from .views import (
     ConversationDetailView,
     ConversationTitleListView,
-    hello_world,
     MessageCreateView,
     ConvoDeleteView,
     LoginView,
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
+    OpenAIQueryView,
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -46,5 +46,6 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
+    path("openai/query/", OpenAIQueryView.as_view(), name="openai-query"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

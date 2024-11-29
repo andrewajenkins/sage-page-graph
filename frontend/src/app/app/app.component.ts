@@ -174,19 +174,33 @@ export class AppComponent implements OnInit {
   onMessageAdded(msg: Message): void {
     if (this.selectedConversation) {
       this.sharedDataService
-        .addChatMessage(this.selectedConversation?.id!, {
+        .addChatMessage(this.selectedConversation.id, {
           ...msg,
           parent_message: this.initialPath[this.initialPath.length - 1],
         })
-        .subscribe((response: any) => {
-          this.selectConversation(this.selectedConversation?.id!);
+        .subscribe({
+          next: (response: any) => {
+            // Refresh the conversation
+            this.selectConversation(this.selectedConversation?.id!);
+          },
+          error: (err) => {
+            // Handle error
+            console.error('Failed to add message:', err);
+            this.handleAddMessageError(err);
+          },
         });
     } else {
-      this.sharedDataService
-        .addFirstChatMessage(msg)
-        .subscribe((response: any) => {
-          this.selectConversation(response.conversation.id!);
-        });
+      this.sharedDataService.addFirstChatMessage(msg).subscribe({
+        next: (response: any) => {
+          // Select the new conversation
+          this.selectConversation(response.conversation.id);
+        },
+        error: (err) => {
+          // Handle error
+          console.error('Failed to add message:', err);
+          this.handleAddMessageError(err);
+        },
+      });
     }
   }
 
@@ -222,5 +236,20 @@ export class AppComponent implements OnInit {
   logOut() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  private handleAddMessageError(err: any): void {
+    if (err.status === 401) {
+      // Unauthorized error
+      alert(
+        'Your session has expired. Your changes are not being saved. Please log out and log back in to continue.',
+      );
+      // Optionally log the user out
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    } else {
+      // General error
+      alert('An error occurred while adding the message. Please try again.');
+    }
   }
 }
