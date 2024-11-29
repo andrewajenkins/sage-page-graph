@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="enabledOnSave" value="true" />
     <option name="executionMode" value="BINARY" />
-    <option name="pathToExecutable" value="E:\code\venv\graph\bin\black" />
+    <option name="pathToExecutable" value="E:\code\sage-page-graph\venv\Scripts\black.exe" />
     <option name="sdkName" value="Python 3.10.12 WSL (Ubuntu-22.04): (/home/andyjenkins/.virtualenvs/sage-page-app/bin/python)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (sage-page-graph)" project-jdk-type="Python SDK" />

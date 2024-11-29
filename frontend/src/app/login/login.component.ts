@@ -5,6 +5,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,27 +24,55 @@ import { MatButton } from '@angular/material/button';
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  errorMessage: string | null = null;
 
   constructor(
     private http: HttpClient,
     private router: Router,
+    private authService: AuthService,
   ) {}
 
   onSubmit(): void {
-    console.log('submitted');
     this.http
-      .post('/api/login/', {
+      .post('/api/token/', {
         username: this.username,
         password: this.password,
       })
       .subscribe({
-        next: () => {
-          this.router.navigate(['/app']); // Redirect to your app's main page
+        next: (response: any) => {
+          // Save the JWT token
+          const token = response.access;
+          const refreshToken = response.refresh;
+
+          this.authService.saveToken(token);
+          this.authService.saveRefreshToken(refreshToken);
+
+          // Optionally, decode the token to extract user group information
+          const decodedToken = this.decodeToken(token);
+          console.log('Logged in as:', decodedToken.username);
+          console.log('User group:', decodedToken.group);
+
+          // Redirect to the main app page
+          this.router.navigate(['/app']);
         },
         error: (err) => {
+          console.error('Login error:', err);
           alert('Invalid username or password');
         },
       });
+  }
+
+  /**
+   * Utility method to decode a JWT token
+   * @param token The JWT token
+   * @returns The decoded token payload
+   */
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return null;
+    }
   }
 }

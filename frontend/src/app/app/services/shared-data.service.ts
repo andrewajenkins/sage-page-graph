@@ -1,7 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Conversation, Message } from '../app.component';
 import { Observable } from 'rxjs/internal/Observable';
+import { AuthService } from '../../services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,33 +14,67 @@ export class SharedDataService {
   data: any[] = [];
   queries: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   getConversationTitles(): Observable<Conversation[]> {
-    return this.http.get<Conversation[]>(`${this.apiUrl}/conversations/`);
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
+    return this.http.get<Conversation[]>(`${this.apiUrl}/conversations/`, {
+      headers,
+    });
   }
 
   getConversationById(id: number): Observable<Conversation> {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
     return this.http.get<Conversation>(
       `${this.apiUrl}/conversations/${id}/detail/`,
+      { headers },
     );
   }
 
   addChatMessage(convoId: number, message: Message): Observable<void> {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
     return this.http.post<void>(
       `${this.apiUrl}/conversations/${convoId}/messages/`,
       { ...message, conversation_id: convoId },
+      { headers },
     );
   }
 
   deleteConversation(id: number) {
-    return this.http.delete<void>(`${this.apiUrl}/conversations/${id}/delete/`);
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
+    return this.http.delete<void>(
+      `${this.apiUrl}/conversations/${id}/delete/`,
+      { headers },
+    );
   }
   addFirstChatMessage(message: Message): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/conversations/messages/`, {
-      ...message,
-      parent_message: null,
-    });
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
+    return this.http.post<void>(
+      `${this.apiUrl}/conversations/messages/`,
+      {
+        ...message,
+        parent_message: null,
+      },
+      { headers },
+    );
   }
 
   selectNode(path: number[]): void {

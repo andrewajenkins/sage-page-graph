@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class TokenService {
-  private readonly TOKEN_KEY = 'app_token'; // Key for storing the token in localStorage
+  private readonly TOKEN_KEY = 'app_token'; // Key for storing the OpenAI token in localStorage
 
   constructor() {}
 
