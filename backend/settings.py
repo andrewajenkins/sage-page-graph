@@ -37,7 +37,13 @@ SECRET_KEY = "django-insecure-#gra+9ydukpnydz8z=&upl22m5n-a$caf@8yg$-krzea4$8^s#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["sage-page.net", "www.sage-page.net", '"backend", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "sage-page.net",
+    "www.sage-page.net",
+    "backend",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
