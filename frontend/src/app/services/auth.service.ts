@@ -7,7 +7,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'api/'; // Backend URL
+  private apiUrl = '/api'; // Backend URL
   private tokenExpirationTimer!: Subscription; // Timer for refreshing tokens
   private refreshInProgress = false;
 

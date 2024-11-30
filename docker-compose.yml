@@ -23,7 +23,6 @@ services:
     build:
       context: .
       dockerfile: tools/docker/backend/Dockerfile
-    # command: gunicorn --reload --workers 3 --bind 0.0.0.0:8000 graph.wsgi:application
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/usr/src/app
@@ -41,19 +40,19 @@ services:
     networks:
       - app-network
     env_file:
-      - backend/.env  # Include your .env file
+      - backend/.env
 
   frontend:
-    build:
-      context: .
-      dockerfile: tools/docker/frontend/Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    networks:
-      - app-network
- 
+     build:
+       context: .
+       dockerfile: tools/docker/frontend/Dockerfile
+     ports:
+       - "80:80"
+     depends_on:
+       - backend
+     networks:
+       - app-network
+
   nginx:
     image: nginx:alpine
     volumes:

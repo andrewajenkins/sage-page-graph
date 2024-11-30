@@ -120,8 +120,11 @@ class MessageCreateView(generics.CreateAPIView):
 
         # If no conversation ID is provided, create a new conversation
         if convo_id is None:
+            user_group = get_object_or_404(UserGroup, user=request.user).group
             # Create a new conversation (you can add logic to customize its properties)
-            conversation = Conversation.objects.create(title=request.data["title"])
+            conversation = Conversation.objects.create(
+                title=request.data["title"], group=user_group
+            )
         else:
             # Ensure the conversation exists
             conversation = get_object_or_404(Conversation, pk=convo_id)

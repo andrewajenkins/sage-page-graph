@@ -2,3 +2,4 @@
 - from wsl2 shell `docker compose up --build`
 - from windows shell `cd frontend && npm install && npm start`
 - export PYTHONPATH=E:\code\sage-page-graph\backend:$PYTHONPATH
+- `npm run build --production` on windows to gen dist folder
