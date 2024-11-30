@@ -46,8 +46,6 @@ services:
     build:
       context: .
       dockerfile: tools/docker/frontend/Dockerfile
-    ports:
-      - "80:80"  # Expose only HTTP for internal communication
     depends_on:
       - backend
     networks:
