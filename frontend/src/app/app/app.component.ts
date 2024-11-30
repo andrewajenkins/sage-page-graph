@@ -102,6 +102,15 @@ export class AppComponent implements OnInit {
 
   deleteCurrentConversation(): void {
     if (this.selectedConversation) {
+      // Display confirmation popup
+      const confirmDeletion = confirm(
+        'Are you sure you want to delete this conversation? This action cannot be undone.',
+      );
+
+      if (!confirmDeletion) {
+        return; // Exit if the user cancels
+      }
+
       this.sharedDataService
         .deleteConversation(this.selectedConversation.id)
         .subscribe(() => {
@@ -120,6 +129,10 @@ export class AppComponent implements OnInit {
 
           this.cdr.detectChanges(); // Manually trigger change detection
         });
+    } else {
+      alert(
+        'No conversation selected. Please select a conversation to delete.',
+      );
     }
   }
 
