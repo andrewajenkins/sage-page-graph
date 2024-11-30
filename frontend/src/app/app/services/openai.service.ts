@@ -10,7 +10,11 @@ export class OpenAIService {
 
   constructor(private http: HttpClient) {}
 
-  sendQuery(prompt: string): Observable<any> {
+  sendQuery(
+    convoID: number | undefined,
+    currentMessageID: string,
+    prompt: string,
+  ): Observable<any> {
     const body = {
       model: 'gpt-4',
       messages: [
@@ -19,6 +23,7 @@ export class OpenAIService {
       ],
       temperature: 0.7,
       max_tokens: 1000,
+      current_message_id: currentMessageID,
     };
     return this.http.post(this.backendApiUrl, body);
   }

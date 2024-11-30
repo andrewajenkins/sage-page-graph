@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenAIService } from '../services/openai.service';
 import { SharedDataService } from '../services/shared-data.service';
-import { Message } from '../app.component';
+import { Conversation, Message } from '../app.component';
 import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-chat',
@@ -36,6 +36,7 @@ import { DividerModule } from 'primeng/divider';
 export class ChatComponent implements OnChanges {
   @Input() chatHistory: any;
   @Input() initialPath: number[] = [];
+  @Input() selectedConversation: Conversation | null = null;
   @Output() subQuerySelect = new EventEmitter<any>();
   @Output() messageAdded = new EventEmitter<Message>();
 
@@ -93,17 +94,24 @@ export class ChatComponent implements OnChanges {
       title: '', // Add title field
     };
 
-    this.openAIService.sendQuery(this.query).subscribe((response: any) => {
-      console.log('response', response);
-      newQuery.response = response.choices[0].message.content;
-      const summaryPrompt = `Summarize the following query in 3-5 words:\nQuery: ${newQuery.query}`;
-      this.openAIService
-        .generateSummary(summaryPrompt)
-        .subscribe((summaryResponse: any) => {
-          newQuery.title = summaryResponse.choices[0].message.content.trim(); // Use summary response as title
-          this.pendingResponse = newQuery;
-        });
-    });
+    const currentMessageId =
+      this.chatHistory.length > 0
+        ? this.chatHistory[this.chatHistory.length - 1].id
+        : null;
+
+    this.openAIService
+      .sendQuery(this.selectedConversation?.id, currentMessageId, this.query)
+      .subscribe((response: any) => {
+        console.log('response', response);
+        newQuery.response = response.choices[0].message.content;
+        const summaryPrompt = `Summarize the following query in 3-5 words:\nQuery: ${newQuery.query}`;
+        this.openAIService
+          .generateSummary(summaryPrompt)
+          .subscribe((summaryResponse: any) => {
+            newQuery.title = summaryResponse.choices[0].message.content.trim(); // Use summary response as title
+            this.pendingResponse = newQuery;
+          });
+      });
 
     this.query = null;
   }
