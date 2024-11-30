@@ -48,10 +48,13 @@ services:
        dockerfile: tools/docker/frontend/Dockerfile
      ports:
        - "80:80"
+       - "443:443"
      depends_on:
        - backend
      networks:
        - app-network
+     volumes:
+       - /etc/letsencrypt:/etc/letsencrypt:ro
 
   nginx:
     image: nginx:alpine
