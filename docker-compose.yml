@@ -43,31 +43,32 @@ services:
       - backend/.env
 
   frontend:
-     build:
-       context: .
-       dockerfile: tools/docker/frontend/Dockerfile
-     ports:
-       - "80:80"
-       - "443:443"
-     depends_on:
-       - backend
-     networks:
-       - app-network
-     volumes:
-       - /etc/letsencrypt:/etc/letsencrypt:ro
+    build:
+      context: .
+      dockerfile: tools/docker/frontend/Dockerfile
+    ports:
+      - "80:80"  # Expose only HTTP for internal communication
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 
   nginx:
     image: nginx:alpine
     volumes:
       - ./nginx-backend.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # Mount SSL certificates as read-only
       - ./backend/staticfiles:/usr/share/nginx/html/static
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"  # Expose HTTPS
     depends_on:
       - backend
       - frontend
     networks:
       - app-network
+
 
 networks:
   app-network:
