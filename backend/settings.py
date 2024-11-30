@@ -176,4 +176,4 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.sage-page.net",
 ]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
