@@ -169,6 +169,11 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
-CSRF_TRUSTED_ORIGINS = ["sage-page.net", "www.sage-page.net", "localhost"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://sage-page.net",
+    "https://www.sage-page.net",
+]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
