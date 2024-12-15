@@ -27,8 +27,7 @@ export const routes: Routes = [
   {
     path: 'app',
     component: AppLayoutComponent, // App layout without menu
-    children: [
-      { path: 'app', component: AppComponent, canActivate: [AuthGuard] },
-    ],
+    canActivate: [AuthGuard],
+    children: [{ path: 'app', component: AppComponent }],
   },
 ];

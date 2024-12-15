@@ -5,6 +5,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { AvatarModule } from 'primeng/avatar';
 import { AccordionModule } from 'primeng/accordion';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -20,7 +21,14 @@ import { Router } from '@angular/router';
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+  ) {
+    if (this.auth.isAuthenticated()) {
+      this.router.navigate(['/app']); // Redirect to the main app page if already logged in
+    }
+  }
   onLoginClick() {
     this.router.navigate(['/login']); // Navigate to the login page
   }
