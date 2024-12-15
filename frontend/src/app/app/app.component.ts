@@ -287,4 +287,16 @@ export class AppComponent implements OnInit {
       alert('An error occurred while adding the message. Please try again.');
     }
   }
+
+  contact() {
+    const email = 'andy@jenkinssd.com'; // Replace with your email address
+    const subject = 'Sage Page Query';
+    const body = 'Hello, I would like to contact you regarding...';
+
+    // Construct the mailto URL
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the email client
+    window.location.href = mailtoLink;
+  }
 }

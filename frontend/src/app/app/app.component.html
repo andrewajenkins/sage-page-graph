@@ -22,8 +22,12 @@
       </mat-list-item>
     </mat-nav-list>
     <div class="modal-button">
-      <p-button (onClick)="manageToken()" label="Manage token" />
-      <p-button (onClick)="logOut()" label="Log out" />
+      <div class="button-container">
+        <p-button (onClick)="manageToken()" label="Manage token"></p-button>
+        <p-button (onClick)="contact()" label="Contact Us"></p-button>
+        <p-button (onClick)="logOut()" label="Log out"></p-button>
+      </div>
+
       <p-dialog
         header="Manage Token"
         [modal]="true"
