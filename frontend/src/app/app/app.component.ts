@@ -244,20 +244,28 @@ export class AppComponent implements OnInit {
   }
 
   manageToken() {
+    this.sharedDataService
+      .getOpenAIKey()
+      .subscribe((key: { openai_key: string }) => {
+        this.token = key.openai_key;
+      });
     this.settingsModalVisible = true;
   }
 
   saveToken($event: MouseEvent) {
     this.settingsModalVisible = false;
-    console.log('Token saved:', this.token);
-    this.tokenService.saveToken(this.token);
+    console.log('Token saved:');
+    // this.tokenService.saveToken(this.token);
+    this.sharedDataService.saveOpenAIKey(this.token).subscribe(() => {});
   }
 
   clearToken() {
     this.settingsModalVisible = false;
     console.log('Token saved:', this.token);
-    this.tokenService.clearToken();
-    this.token = '';
+    // this.tokenService.clearToken();
+    this.sharedDataService.deleteOpenAIKey().subscribe(() => {
+      this.token = '';
+    });
   }
 
   logOut() {

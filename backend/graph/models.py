@@ -14,6 +14,11 @@ class UserGroup(models.Model):
         return f"Group: {self.group.name}, User: {self.user.username}"
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    openai_api_key = models.CharField(max_length=255, null=True, blank=True)
+
+
 class Conversation(models.Model):
     """
     Represents a conversation consisting of multiple messages.

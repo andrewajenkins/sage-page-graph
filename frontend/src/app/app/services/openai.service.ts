@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,13 +9,20 @@ import { Observable } from 'rxjs';
 export class OpenAIService {
   private backendApiUrl = '/api/openai/query/';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   sendQuery(
     convoID: number | undefined,
     currentMessageID: string,
     prompt: string,
   ): Observable<any> {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.authService.getToken()}`,
+    };
     const body = {
       model: 'gpt-4',
       messages: [
@@ -25,10 +33,14 @@ export class OpenAIService {
       max_tokens: 1000,
       current_message_id: currentMessageID,
     };
-    return this.http.post(this.backendApiUrl, body);
+    return this.http.post(this.backendApiUrl, body, { headers });
   }
 
   generateSummary(prompt: string): Observable<any> {
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.authService.getToken()}`,
+    };
     const body = {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -38,6 +50,6 @@ export class OpenAIService {
       temperature: 0.7,
       max_tokens: 10, // Limit tokens for summary
     };
-    return this.http.post(this.backendApiUrl, body);
+    return this.http.post(this.backendApiUrl, body, { headers });
   }
 }

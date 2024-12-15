@@ -146,4 +146,14 @@ export class AuthService {
       return null;
     }
   }
+
+  getKey(username: string) {
+    return this.http.post(`${this.apiUrl}/key/`, { username }).pipe(
+      map((tokens: any) => {
+        this.setTokens(tokens.access, tokens.refresh);
+        this.scheduleTokenRefresh();
+        this.loggedInSubject.next(true);
+      }),
+    );
+  }
 }

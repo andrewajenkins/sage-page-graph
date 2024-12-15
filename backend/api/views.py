@@ -1,6 +1,5 @@
 # views.py
 
-from django.contrib.auth import authenticate
 from rest_framework import generics
 
 from graph.utils import (
@@ -8,43 +7,62 @@ from graph.utils import (
     count_tokens,
     get_nearest_ancestors,
 )
-from .serializers import (
+from api.serializers import (
     ConversationDetailSerializer,
     MessageSerializer,
+    ConversationTitleSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from graph.models import Conversation, UserGroup
-from .serializers import ConversationTitleSerializer
-from django.shortcuts import get_object_or_404
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.conf import settings
-import requests
+from rest_framework.permissions import AllowAny
+from graph.models import Conversation
 from django.contrib.auth.models import User, Group
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from graph.models import UserGroup
 
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import requests
+from graph.models import UserProfile
+
 
 class OpenAIQueryView(APIView):
     """
-    View to handle OpenAI API queries.
+    View to handle OpenAI API queries using the API key from the user's profile.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
-        api_url = "https://api.openai.com/v1/chat/completions"
+        # Get the authenticated user
+        user = request.user
+
+        if not user.is_authenticated:
+            return Response(
+                {"error": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Retrieve the user's profile and get the OpenAI API key
+        user_profile = get_object_or_404(UserProfile, user=user)
+        api_key = user_profile.openai_api_key
+
+        if not api_key:
+            return Response(
+                {"error": "User profile does not have an OpenAI API key."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Read data from the request
         model = request.data.get("model", "gpt-4")
+        api_url = "https://api.openai.com/v1/chat/completions"
         prompt = request.data.get("messages", [{"content": ""}])[-1]["content"]
         temperature = request.data.get("temperature", 0.7)
         max_tokens = request.data.get("max_tokens", 1000)
@@ -98,7 +116,7 @@ class OpenAIQueryView(APIView):
         print(body)
 
         headers = {
-            "Authorization": f"Bearer {settings.OPENAI_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
 
@@ -274,6 +292,7 @@ class RegisterView(APIView):
 
         # Create a UserGroup association
         UserGroup.objects.create(user=user, group=group)
+        UserProfile.objects.create(user=user, openai_api_key=key)
 
         # Generate JWT tokens (access and refresh tokens)
         refresh = RefreshToken.for_user(user)
@@ -292,3 +311,63 @@ class RegisterView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class OpenAIKeyView(APIView):
+    """
+    View to get the OpenAI API key for the authenticated user.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Assuming the OpenAI API key is stored in the UserProfile model
+            user_profile = UserProfile.objects.get(user=request.user)
+            openai_key = (
+                user_profile.openai_api_key
+            )  # Replace with the actual field in your model
+            return Response({"openai_key": openai_key}, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response(
+                {"error": "User profile not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            # Get the user's profile
+            user_profile = UserProfile.objects.get(user=request.user)
+
+            # Remove the OpenAI API key
+            user_profile.openai_api_key = None
+            user_profile.save()
+
+            return Response(
+                {"message": "OpenAI API key deleted successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        except UserProfile.DoesNotExist:
+            return Response(
+                {"error": "User profile not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # Get the user's profile
+            user_profile = UserProfile.objects.get(user=request.user)
+
+            # Set the OpenAI API key
+            user_profile.openai_api_key = request.data.get("openai_key")
+            user_profile.save()
+
+            return Response(
+                {"message": "OpenAI API key saved successfully."},
+                status=status.HTTP_200_OK,
+            )
+        except UserProfile.DoesNotExist:
+            return Response(
+                {"error": "User profile not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
