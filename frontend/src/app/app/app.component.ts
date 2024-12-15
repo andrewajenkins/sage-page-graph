@@ -72,7 +72,9 @@ export class AppComponent implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.waitForTokenToBeSaved();
+
     this.sharedDataService
       .getConversationTitles()
       .subscribe((convos: Conversation[]) => {
@@ -99,7 +101,17 @@ export class AppComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
-
+  waitForTokenToBeSaved(): Promise<void> {
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        // Check if token is set in sessionStorage
+        if (this.authService.getAccessToken()) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100); // Check every 100 milliseconds
+    });
+  }
   deleteCurrentConversation(): void {
     if (this.selectedConversation) {
       // Display confirmation popup
@@ -147,7 +159,9 @@ export class AppComponent implements OnInit {
     this.sharedDataService.reset();
   }
 
-  selectConversation(id: number): void {
+  async selectConversation(id: number): Promise<void> {
+    await this.waitForTokenToBeSaved();
+
     this.sharedDataService
       .getConversationById(id)
       .subscribe((c: Conversation) => {

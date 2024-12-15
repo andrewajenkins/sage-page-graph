@@ -9,6 +9,7 @@ from .views import (
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
     OpenAIQueryView,
+    RegisterView,
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -47,5 +48,6 @@ urlpatterns = [
     path("token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("openai/query/", OpenAIQueryView.as_view(), name="openai-query"),
+    path("register/", RegisterView.as_view(), name="register"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

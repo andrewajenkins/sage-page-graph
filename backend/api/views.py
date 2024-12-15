@@ -16,7 +16,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from graph.models import Conversation, UserGroup
 from .serializers import ConversationTitleSerializer
 from django.shortcuts import get_object_or_404
@@ -26,6 +26,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 import requests
+from django.contrib.auth.models import User, Group
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from graph.models import UserGroup
 
 
 class OpenAIQueryView(APIView):
@@ -232,3 +241,54 @@ class LoginView(APIView):
             return Response(
                 {"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
             )
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Get data from request
+        username = request.data.get("username")
+        password = request.data.get("password")
+        key = request.data.get(
+            "key"
+        )  # Assuming key is for registration (e.g., OpenAI key)
+
+        # Check if the user already exists
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"message": "User already exists"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create new user
+        user = User.objects.create_user(username=username, password=password)
+
+        # Optionally, assign the user to a group (UserGroup)
+        try:
+            group = Group.objects.get(
+                name=username
+            )  # Use an existing group or create one
+        except ObjectDoesNotExist:
+            # Create a new group if it doesn't exist
+            group = Group.objects.create(name=username)
+
+        # Create a UserGroup association
+        UserGroup.objects.create(user=user, group=group)
+
+        # Generate JWT tokens (access and refresh tokens)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        # Optional: Store the OpenAI key or use it for something
+        # user_profile = UserProfile.objects.create(user=user, openai_key=key)
+
+        # Set tokens in the response
+        return Response(
+            {
+                "message": "User registered successfully",
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            },
+            status=status.HTTP_201_CREATED,
+        )

@@ -1,0 +1,168 @@
+<div
+  class="px-4 py-8 md:px-6 lg:px-8 flex align-items-center justify-content-center"
+  style="
+    height: 100vh;
+    background: linear-gradient(-225deg, #ac32e4, #7918f2 48%, #4801ff);
+  "
+>
+  <div
+    class="p-6 shadow-2 text-center lg:w-30rem"
+    style="
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+    "
+  >
+    <div class="text-4xl font-medium mb-6">Welcome to Sage Page!</div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- Email Field with Validation -->
+      <div class="mb-4">
+        <label for="username" class="block text-white-alpha-80 text-xl mb-2"
+          >Enter your email</label
+        >
+        <input
+          type="text"
+          id="username"
+          class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
+          formControlName="username"
+          style="border-radius: 30px"
+        />
+        <div
+          *ngIf="
+            registerForm.get('username')!.invalid &&
+            registerForm.get('username')!.touched
+          "
+          class="text-red-500"
+        >
+          <div *ngIf="registerForm.get('username')!.errors?.['required']">
+            Email is required.
+          </div>
+          <div *ngIf="registerForm.get('username')!.errors?.['email']">
+            Please enter a valid email address.
+          </div>
+        </div>
+      </div>
+
+      <!-- Password Field with Validation -->
+      <div class="mb-4">
+        <label for="password" class="block text-white-alpha-80 text-xl mb-2"
+          >Enter your password</label
+        >
+        <input
+          type="password"
+          id="password"
+          class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
+          formControlName="password"
+          style="border-radius: 30px"
+        />
+        <div
+          *ngIf="
+            registerForm.get('password')!.invalid &&
+            registerForm.get('password')!.touched
+          "
+          class="text-red-500"
+        >
+          <div *ngIf="registerForm.get('password')!.errors?.['required']">
+            Password is required.
+          </div>
+          <div *ngIf="registerForm.get('password')!.errors?.['minlength']">
+            Password must be at least 6 characters long.
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field with Validation -->
+      <div class="mb-4">
+        <label
+          for="confirmPassword"
+          class="block text-white-alpha-80 text-xl mb-2"
+          >Confirm your password</label
+        >
+        <input
+          type="password"
+          id="confirmPassword"
+          class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
+          formControlName="confirmPassword"
+          style="border-radius: 30px"
+        />
+        <div
+          *ngIf="
+            registerForm.get('confirmPassword')!.invalid &&
+            registerForm.get('confirmPassword')!.touched
+          "
+          class="text-red-500"
+        >
+          <div
+            *ngIf="registerForm.get('confirmPassword')!.errors?.['required']"
+          >
+            Confirm Password is required.
+          </div>
+          <div
+            *ngIf="
+              registerForm.get('confirmPassword')!.errors?.['validateEqual']
+            "
+          >
+            Passwords must match.
+          </div>
+        </div>
+      </div>
+
+      <!-- OpenAI Key Field with Validation -->
+      <div class="mb-4">
+        <label for="key" class="block text-white-alpha-80 text-xl mb-2"
+          >Enter your OpenAI key</label
+        >
+        <h3>
+          To get an OpenAI API key, visit https://platform.openai.com/signup and
+          create an account. Then, go to the API section to generate your key.
+        </h3>
+        <input
+          type="password"
+          id="key"
+          class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
+          formControlName="key"
+          style="border-radius: 30px"
+        />
+        <div
+          *ngIf="
+            registerForm.get('key')!.invalid && registerForm.get('key')!.touched
+          "
+          class="text-red-500"
+        >
+          <div *ngIf="registerForm.get('key')!.errors?.['required']">
+            API Key is required.
+          </div>
+          <div *ngIf="registerForm.get('key')!.errors?.['minlength']">
+            API Key must be at least 32 characters long.
+          </div>
+        </div>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1rem;
+        "
+      >
+        <button
+          type="submit"
+          class="appearance-none border-none p-3 w-full outline-none text-xl mb-4 font-medium w-12rem bg-white-alpha-30 hover:bg-white-alpha-40 active:bg-white-alpha-20 text-white-alpha-80 cursor-pointer transition-colors transition-duration-150"
+          style="border-radius: 30px"
+          [disabled]="registerForm.invalid"
+        >
+          Submit
+        </button>
+        <button
+          type="button"
+          class="appearance-none border-none p-2 w-full outline-none text-lg mb-4 font-medium w-10rem bg-white-alpha-30 hover:bg-white-alpha-40 active:bg-white-alpha-20 text-white-alpha-80 cursor-pointer transition-colors transition-duration-150"
+          style="border-radius: 30px"
+          (click)="onSignIn()"
+        >
+          Login Instead
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

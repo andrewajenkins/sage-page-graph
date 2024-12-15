@@ -36,28 +36,59 @@
     "
   >
     <div class="text-4xl font-medium mb-6">Welcome to Sage Page!</div>
-    <input
-      type="text"
-      class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
-      placeholder="Enter your email"
-      [(ngModel)]="username"
-      style="border-radius: 30px"
-    />
-    <input
-      type="password"
-      class="appearance-none border-none p-3 w-full outline-none text-xl mb-4 bg-white-alpha-10 text-white-alpha-60"
-      placeholder="Enter your password"
-      [(ngModel)]="password"
-      style="border-radius: 30px"
-    />
-    <button
-      type="button"
-      class="appearance-none border-none p-3 w-full outline-none text-xl mb-4 font-medium w-12rem bg-white-alpha-30 hover:bg-white-alpha-40 active:bg-white-alpha-20 text-white-alpha-80 cursor-pointer transition-colors transition-duration-150"
-      style="border-radius: 30px"
-      (click)="onSubmit()"
+    <div class="form-group">
+      <label for="email" class="block text-white-alpha-80 text-xl mb-2"
+        >Email</label
+      >
+      <input
+        type="text"
+        id="email"
+        class="appearance-none border-none p-3 w-full outline-none text-xl block mb-4 bg-white-alpha-10 text-white-alpha-60"
+        [(ngModel)]="username"
+        style="border-radius: 30px"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="block text-white-alpha-80 text-xl mb-2"
+        >Password</label
+      >
+      <input
+        type="password"
+        id="password"
+        class="appearance-none border-none p-3 w-full outline-none text-xl mb-4 bg-white-alpha-10 text-white-alpha-60"
+        [(ngModel)]="password"
+        style="border-radius: 30px"
+      />
+    </div>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      "
     >
-      Sign In
-    </button>
+      <button
+        type="button"
+        class="appearance-none border-none p-3 w-full outline-none text-xl mb-4 font-medium w-12rem bg-white-alpha-30 hover:bg-white-alpha-40 active:bg-white-alpha-20 text-white-alpha-80 cursor-pointer transition-colors transition-duration-150"
+        style="border-radius: 30px"
+        (click)="onSubmit()"
+      >
+        Sign In
+      </button>
+
+      <button
+        type="button"
+        class="appearance-none border-none p-2 w-full outline-none text-lg mb-4 font-medium w-10rem bg-white-alpha-30 hover:bg-white-alpha-40 active:bg-white-alpha-20 text-white-alpha-80 cursor-pointer transition-colors transition-duration-150"
+        style="border-radius: 30px"
+        (click)="onRegister()"
+      >
+        Register Instead
+      </button>
+    </div>
+
     <!--    <a class="cursor-pointer font-medium block text-center">Forgot Password?</a>-->
   </div>
   <!--  </form>-->

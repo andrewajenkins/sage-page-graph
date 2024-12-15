@@ -148,3 +148,4 @@ This guide explains how to set up and run Sage Page locally and on an AWS EC2 in
 - Ensure that all required environment variables are configured before running the app (e.g., `OPENAI_API_KEY` in backend/.env file).
 - Replace `<repository-url>` and `<your-ec2-public-ip>` with the appropriate values for your deployment.
 - For production deployment, configure HTTPS using Nginx and a valid SSL certificate.
+- `ssh -i "~/sage-page-graph-key-pair.pem" admin@ec2-54-85-198-73.compute-1.amazonaws.com` is an example command for accessing the EC2 instance. Replace the key pair path and public IP with your own.

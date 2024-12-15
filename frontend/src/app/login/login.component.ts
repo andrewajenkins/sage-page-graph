@@ -53,4 +53,8 @@ export class LoginComponent {
       },
     });
   }
+
+  onRegister() {
+    this.router.navigate(['register']);
+  }
 }

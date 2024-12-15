@@ -29,6 +29,17 @@ export class AuthService {
     );
   }
 
+  register(username: string, password: string, key: string): Observable<any> {
+    const data = { username, password, key };
+    return this.http.post(`${this.apiUrl}/register/`, data).pipe(
+      map((tokens: any) => {
+        this.setTokens(tokens.access, tokens.refresh);
+        this.scheduleTokenRefresh();
+        this.loggedInSubject.next(true);
+      }),
+    );
+  }
+
   // Refresh the token
   refreshToken(): Observable<any> {
     const refresh = this.getRefreshToken();
