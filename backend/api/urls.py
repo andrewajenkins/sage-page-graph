@@ -11,6 +11,7 @@ from .views import (
     OpenAIQueryView,
     RegisterView,
     OpenAIKeyView,
+    MachineView,
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -51,5 +52,6 @@ urlpatterns = [
     path("openai/query/", OpenAIQueryView.as_view(), name="openai-query"),
     path("register/", RegisterView.as_view(), name="register"),
     path("openaikey/", OpenAIKeyView.as_view(), name="get_openaikey"),
+    path("machines/", MachineView.as_view(), name="get_openaikey"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

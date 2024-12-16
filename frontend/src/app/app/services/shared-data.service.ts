@@ -185,4 +185,12 @@ export class SharedDataService {
       { headers },
     );
   }
+
+  getMachines() {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.authService.getToken()}`,
+    );
+    return this.http.get<string[]>(`${this.apiUrl}/machines/`, { headers });
+  }
 }

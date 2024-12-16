@@ -1,14 +1,8 @@
 <div class="chat-container">
-  <!--  <div class="dropdown-container">-->
-  <!--    <mat-form-field appearance="fill" class="dropdown">-->
-  <!--      <mat-label>Select LLM Machine</mat-label>-->
-  <!--      <mat-select [(value)]="selectedMachine">-->
-  <!--        <mat-option *ngFor="let machine of machines" [value]="machine">-->
-  <!--          {{ machine }}-->
-  <!--        </mat-option>-->
-  <!--      </mat-select>-->
-  <!--    </mat-form-field>-->
-  <!--  </div>-->
+  <div class="dropdown-container">
+    <mat-label>Select LLM Machine</mat-label>
+    <p-dropdown [options]="machines" [(ngModel)]="selectedMachine"></p-dropdown>
+  </div>
   <div class="chat-history">
     <div *ngFor="let item of chatHistory; let i = index">
       <p-divider align="center">

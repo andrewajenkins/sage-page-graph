@@ -17,6 +17,7 @@ import { OpenAIService } from '../services/openai.service';
 import { SharedDataService } from '../services/shared-data.service';
 import { Conversation, Message } from '../app.component';
 import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -29,6 +30,7 @@ import { DividerModule } from 'primeng/divider';
     MatInputModule,
     MatButtonModule,
     DividerModule,
+    DropdownModule,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -40,8 +42,8 @@ export class ChatComponent implements OnChanges {
   @Output() subQuerySelect = new EventEmitter<any>();
   @Output() messageAdded = new EventEmitter<Message>();
 
-  machines = ['Machine 1'];
-  selectedMachine = this.machines[0];
+  machines!: string[];
+  selectedMachine: any;
   query!: string | null;
   pendingResponse: any = null;
 
@@ -50,8 +52,19 @@ export class ChatComponent implements OnChanges {
     private dataService: SharedDataService, // Inject DataService
   ) {
     this.openNodesAlongPath(this.initialPath);
+    this.dataService.getMachines().subscribe((machines: any) => {
+      console.log('machines', machines);
+      this.machines = machines.data
+        .filter(
+          (machine: any) =>
+            machine.id.startsWith('gpt') &&
+            machine.id.indexOf('realtime') === -1,
+        )
+        .map((machine: any) => machine.id);
+      this.selectedMachine = this.machines[0];
+      console.log('this.machines:', this.machines);
+    });
   }
-
   ngOnChanges(changes: any): void {
     console.log('chat component -> changes', changes);
     if (changes.chatHistory) {
@@ -100,7 +113,12 @@ export class ChatComponent implements OnChanges {
         : null;
 
     this.openAIService
-      .sendQuery(this.selectedConversation?.id, currentMessageId, this.query)
+      .sendQuery(
+        this.selectedConversation?.id,
+        currentMessageId,
+        this.query,
+        this.selectedMachine,
+      )
       .subscribe((response: any) => {
         console.log('response', response);
         newQuery.response = response.choices[0].message.content;

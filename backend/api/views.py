@@ -33,6 +33,36 @@ import requests
 from graph.models import UserProfile
 
 
+class MachineView(APIView):
+    """
+    View to get the list of GPT models from the OpenAI API.
+    """
+
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get the authenticated user
+        user = request.user
+
+        if not user.is_authenticated:
+            return Response(
+                {"error": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Retrieve the user's profile and get the OpenAI API key
+        user_profile = get_object_or_404(UserProfile, user=user)
+        api_key = user_profile.openai_api_key
+        url = "https://api.openai.com/v1/models"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        response = requests.get(url, headers=headers)
+        print(response.json())
+        return Response(response.json())
+
+
 class OpenAIQueryView(APIView):
     """
     View to handle OpenAI API queries using the API key from the user's profile.

@@ -5,11 +5,20 @@
 }
 
 .dropdown-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr;
-  gap: 10px;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
+
+.dropdown-container mat-label {
+  margin-bottom: 10px;
+}
+
+//.dropdown-container p-dropdown {
+//  width: 100%;
+//}
 
 .dropdown {
   grid-column: 2 / span 2;
@@ -59,3 +68,8 @@ button.mat-button:hover {
   border: 1px solid #ddd; /* Optional: Adds a light border for clarity */
 }
 
+.mat-select-panel-class {
+  position: relative;
+  top: 50px !important;
+  left: 50px !important;
+}

@@ -95,7 +95,7 @@ export class AuthService {
   }
 
   // Set tokens in local storage
-  private setTokens(access: string, refresh: string): void {
+  setTokens(access: string, refresh: string): void {
     localStorage.setItem('auth_token', access);
     localStorage.setItem('refresh_token', refresh);
   }

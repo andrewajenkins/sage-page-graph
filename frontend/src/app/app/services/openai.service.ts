@@ -18,13 +18,14 @@ export class OpenAIService {
     convoID: number | undefined,
     currentMessageID: string,
     prompt: string,
+    model: string = 'gpt-4',
   ): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.authService.getToken()}`,
     };
     const body = {
-      model: 'gpt-4',
+      model: model,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
         { role: 'user', content: prompt },

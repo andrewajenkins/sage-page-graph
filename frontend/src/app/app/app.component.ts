@@ -274,20 +274,38 @@ export class AppComponent implements OnInit {
   }
 
   private handleAddMessageError(err: any): void {
-    if (err.status === 401) {
+    if (err.status === 401 || err.status === 500) {
+      console.log('session expired?');
       // Unauthorized error
-      alert(
-        'Your session has expired. Your changes are not being saved. Please log out and log back in to continue.',
-      );
-      // Optionally log the user out
-      this.authService.logout();
-      this.router.navigate(['/login']);
+      this.tryRefreshToken().then((success) => {
+        if (success) {
+          // Retry the failed request or inform the user to try again
+        } else {
+          // Refresh token failed; log the user out
+          alert('Your session has expired. Please log in again.');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+      });
     } else {
       // General error
       alert('An error occurred while adding the message. Please try again.');
     }
   }
-
+  private tryRefreshToken(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.authService.refreshToken().subscribe({
+        next: (newAccessToken) => {
+          // Update the access token
+          resolve(true);
+        },
+        error: (refreshError) => {
+          // Handle refresh token error
+          resolve(false);
+        },
+      });
+    });
+  }
   contact() {
     const email = 'andy@jenkinssd.com'; // Replace with your email address
     const subject = 'Sage Page Query';
