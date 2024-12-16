@@ -33,16 +33,6 @@ mat-sidenav-content {
   width: 100%;
 }
 
-button.mat-button {
-  margin: 4px 0;
-  background-color: #e0f7fa;
-  color: #00796b;
-  border: 4px solid black;
-  border-radius: 4px;
-  padding: 8px 16px;
-  text-transform: none;
-}
-
 .modal-button {
   position: absolute;
   bottom: 16px; /* Distance from the bottom */
@@ -58,4 +48,9 @@ button.mat-button {
 
 .button-container p-button {
   width: 100%; /* Stretch buttons to fill the parent container */
+}
+
+mat-list-item, button {
+  padding: 10px;
+  margin: 0 10px;
 }

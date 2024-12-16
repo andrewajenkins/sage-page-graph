@@ -299,4 +299,6 @@ export class AppComponent implements OnInit {
     // Open the email client
     window.location.href = mailtoLink;
   }
+
+  protected readonly alert = alert;
 }

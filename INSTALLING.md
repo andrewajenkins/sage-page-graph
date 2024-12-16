@@ -181,12 +181,12 @@ After applying these changes, try running `docker-compose up --build` again.
 ### **Backend**
 - **Apply Migrations**:
   ```bash
-  docker exec -it backend-container python manage.py migrate
+   docker exec -it sage-page-graph_backend_1 python manage.py migrate
   ```
 
 - **Create Superuser**:
   ```bash
-  docker exec -it backend-container python manage.py createsuperuser
+   docker exec -it sage-page-graph_backend_1 python manage.py createsuperuser
   ```
 
 ---

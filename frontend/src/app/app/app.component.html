@@ -8,11 +8,20 @@
       />
       <h1>Sage Page App</h1>
     </div>
-
-    <button (click)="addNewConversation()">Add New Conversation</button>
-    <button (click)="deleteCurrentConversation()">
-      Delete Current Conversation
-    </button>
+    <div class="button-container">
+      <button
+        (click)="addNewConversation()"
+        class="p-element p-ripple w p-button p-component"
+      >
+        <span class="p-button-label">Add New Conversation</span>
+      </button>
+      <button
+        (click)="deleteCurrentConversation()"
+        class="p-element p-ripple w p-button p-component"
+      >
+        <span class="p-button-label">Delete Current Conversation</span>
+      </button>
+    </div>
     <mat-nav-list>
       <mat-list-item
         *ngFor="let conversation of conversations; let i = index"
@@ -23,9 +32,24 @@
     </mat-nav-list>
     <div class="modal-button">
       <div class="button-container">
-        <p-button (onClick)="manageToken()" label="Manage token"></p-button>
-        <p-button (onClick)="contact()" label="Contact Us"></p-button>
-        <p-button (onClick)="logOut()" label="Log out"></p-button>
+        <button
+          (click)="manageToken()"
+          class="p-element p-ripple w p-button p-component"
+        >
+          <span class="p-button-label">Manage token</span>
+        </button>
+        <button
+          (click)="contact()"
+          class="p-element p-ripple w p-button p-component"
+        >
+          <span class="p-button-label">Contact Us</span>
+        </button>
+        <button
+          (click)="logOut()"
+          class="p-element p-ripple w p-button p-component"
+        >
+          <span class="p-button-label">Log out</span>
+        </button>
       </div>
 
       <p-dialog

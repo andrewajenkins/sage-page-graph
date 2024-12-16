@@ -58,7 +58,7 @@ export class RegisterComponent {
       .subscribe({
         next: (response: any) => {
           // Assuming authService handles token saving internally
-          console.log('Registration successful!');
+          alert('Registration successful! Please log in.');
 
           // Decode the token to extract user group information (if needed)
           // const decodedToken = this.authService.decodeToken();
