@@ -104,7 +104,54 @@ This guide explains how to set up and run Sage Page locally and on an AWS EC2 in
    ```bash
    ssh -i "~/sage-page-graph-key-pair.pem" admin@<your-ec2-public-ip>
    ```
+---
+The error you're encountering typically happens when your user doesn't have the necessary permissions to access Docker. To resolve this issue, try the following steps:
 
+1. **Check Docker Group Permissions**:
+   Ensure that your user is part of the Docker group. You can check this by running:
+   ```bash
+   groups
+   ```
+   If `docker` isn't listed, add your user to the Docker group:
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
+
+2. **Restart the Session**:
+   After adding your user to the Docker group, log out and log back in, or run:
+   ```bash
+   newgrp docker
+   ```
+
+3. **Check Docker Daemon**:
+   Ensure that the Docker daemon is running. You can start it using:
+   ```bash
+   sudo systemctl start docker
+   ```
+   You can also enable it to start automatically on boot:
+   ```bash
+   sudo systemctl enable docker
+   ```
+
+4. **Check Docker Socket Permissions**:
+   The error could also stem from the permissions of the Docker socket. Make sure the `docker.sock` file has appropriate permissions:
+   ```bash
+   sudo chmod 666 /var/run/docker.sock
+   ```
+
+5. **Try Running with `sudo`**:
+   If you're still facing issues, try running your command with `sudo`:
+   ```bash
+   sudo docker-compose up --build
+   ```
+
+6. **Verify Docker and Docker Compose Installation**:
+   If the problem persists, ensure that Docker and Docker Compose are properly installed and up-to-date. You can update Docker Compose with:
+   ```bash
+   sudo apt-get install docker-compose
+   ```
+
+After applying these changes, try running `docker-compose up --build` again.
 ---
 
 ## **Useful Commands**

@@ -18,19 +18,6 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-env = environ.Env()
-environ.Env.read_env()  # Automatically loads variables from .env
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-# Debugging: Print the loaded environment variables
-print(f"OPENAI_API_KEY: {env('OPENAI_API_KEY', default=None)}")
-
-# Load the OpenAI API key
-OPENAI_API_KEY = env("OPENAI_API_KEY", default=None)
-
-if not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY is not set. Please configure it in the .env file.")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-#gra+9ydukpnydz8z=&upl22m5n-a$caf@8yg$-krzea4$8^s#"
 

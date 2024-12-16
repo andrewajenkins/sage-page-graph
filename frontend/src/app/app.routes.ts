@@ -17,9 +17,6 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'landing', pathMatch: 'full' }, // Default to landing page
       { path: 'login', component: LoginComponent },
-      { path: 'store', component: StoreComponent },
-      { path: 'info', component: InfoComponent },
-      { path: 'settings', component: SettingsComponent },
       { path: 'landing', component: LandingPageComponent },
       { path: 'register', component: RegisterComponent },
     ],
