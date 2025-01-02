@@ -9,6 +9,8 @@ import { AuthGuard } from './services/auth-guard';
 import { MenuLayoutComponent } from './menu-layout/menu-layout.component';
 import { AppLayoutComponent } from './app/app-layout/app-layout.component';
 import { RegisterComponent } from './register/register.component';
+import { AboutComponent } from './about/about.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +21,8 @@ export const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'landing', component: LandingPageComponent },
       { path: 'register', component: RegisterComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'privacy', component: PrivacyComponent },
     ],
   },
   {

@@ -51,7 +51,6 @@ export class ChatComponent implements OnChanges {
     private openAIService: OpenAIService,
     private dataService: SharedDataService, // Inject DataService
   ) {
-    this.openNodesAlongPath(this.initialPath);
     this.dataService.getMachines().subscribe((machines: any) => {
       console.log('machines', machines);
       this.machines = machines.data
@@ -143,17 +142,5 @@ export class ChatComponent implements OnChanges {
 
   deleteResponse(): void {
     this.pendingResponse = null;
-  }
-
-  openNodesAlongPath(path: number[]): void {
-    // let currentNode = this.dataService.getCurrentPath();
-    // this.chatHistory = [currentNode[0]];
-    //
-    // for (const index of path) {
-    //   if (currentNode[index] && currentNode[index].queries) {
-    //     currentNode = currentNode[index].queries;
-    //     this.chatHistory.push(currentNode[0]);
-    //   }
-    // }
   }
 }

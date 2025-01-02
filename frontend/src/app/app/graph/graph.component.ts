@@ -17,8 +17,8 @@ import {
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
-import { SharedDataService } from '../services/shared-data.service';
 import { Conversation } from '../app.component';
+
 @Component({
   selector: 'app-graph',
   standalone: true,

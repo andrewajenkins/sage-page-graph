@@ -15,4 +15,8 @@ export class MenuLayoutComponent {
   goToLandingPage() {
     this.router.navigate(['/landing']); // Navigate to the landing page
   }
+
+  goToAboutPage() {
+    this.router.navigate(['/about']); // Navigate to the about page
+  }
 }
