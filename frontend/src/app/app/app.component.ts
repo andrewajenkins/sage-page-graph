@@ -104,23 +104,21 @@ export class AppComponent implements OnInit {
   waitForTokenToBeSaved(): Promise<void> {
     return new Promise((resolve) => {
       const interval = setInterval(() => {
-        // Check if token is set in sessionStorage
         if (this.authService.getAccessToken()) {
           clearInterval(interval);
           resolve();
         }
-      }, 100); // Check every 100 milliseconds
+      }, 100);
     });
   }
   deleteCurrentConversation(): void {
     if (this.selectedConversation) {
-      // Display confirmation popup
       const confirmDeletion = confirm(
         'Are you sure you want to delete this conversation? This action cannot be undone.',
       );
 
       if (!confirmDeletion) {
-        return; // Exit if the user cancels
+        return;
       }
 
       this.sharedDataService
@@ -170,32 +168,27 @@ export class AppComponent implements OnInit {
           this.conversations = [...this.conversations];
         }
         this.selectedConversation = c;
-        console.log('Selected conversation:', this.selectedConversation);
         this.chatHistory =
           this.sharedDataService.initializeDeepestConversation(c);
-        this.initialPath = this.sharedDataService.getCurrentPath(); // Get the initial path
+        this.initialPath = this.sharedDataService.getCurrentPath();
 
-        this.cdr.detectChanges(); // Manually trigger change detection
+        this.cdr.detectChanges();
       });
   }
 
   onNodeSelect(node: any): void {
-    console.log('Node selected:', node);
-
     this.chatHistory = this.sharedDataService.getMessageHistory(
       this.selectedConversation!,
       node.id,
     );
     this.initialPath = this.sharedDataService.getCurrentPath();
-    console.log('Path to node:', this.chatHistory);
-    console.log('Initial path:', this.initialPath);
   }
 
   addNewConversation(): void {
-    this.selectedConversation = null; // Unselect everything
+    this.selectedConversation = null;
     this.initialPath = [];
-    this.chatHistory = []; // Clear the chat history
-    this.sharedDataService.reset(); // Reset pointers in the data service
+    this.chatHistory = [];
+    this.sharedDataService.reset();
   }
 
   onMessageAdded(msg: Message): void {
@@ -207,24 +200,18 @@ export class AppComponent implements OnInit {
         })
         .subscribe({
           next: (response: any) => {
-            // Refresh the conversation
             this.selectConversation(this.selectedConversation?.id!);
           },
           error: (err) => {
-            // Handle error
-            console.error('Failed to add message:', err);
             this.handleAddMessageError(err);
           },
         });
     } else {
       this.sharedDataService.addFirstChatMessage(msg).subscribe({
         next: (response: any) => {
-          // Select the new conversation
           this.selectConversation(response.conversation.id);
         },
         error: (err) => {
-          // Handle error
-          console.error('Failed to add message:', err);
           this.handleAddMessageError(err);
         },
       });
@@ -232,15 +219,12 @@ export class AppComponent implements OnInit {
   }
 
   onSubQuerySelect(subQuery: any): void {
-    console.log('Sub-query selected:', subQuery);
     this.chatHistory = this.sharedDataService.getMessageHistory(
       this.selectedConversation!,
       subQuery.subQuery.id,
     );
     this.initialPath = this.sharedDataService.getCurrentPath();
-    console.log('Updated chat history:', this.chatHistory);
-    console.log('Updated initial path:', this.initialPath);
-    this.cdr.detectChanges(); // Manually trigger change detection
+    this.cdr.detectChanges();
   }
 
   manageToken() {
@@ -254,15 +238,11 @@ export class AppComponent implements OnInit {
 
   saveToken($event: MouseEvent) {
     this.settingsModalVisible = false;
-    console.log('Token saved:');
-    // this.tokenService.saveToken(this.token);
     this.sharedDataService.saveOpenAIKey(this.token).subscribe(() => {});
   }
 
   clearToken() {
     this.settingsModalVisible = false;
-    console.log('Token saved:', this.token);
-    // this.tokenService.clearToken();
     this.sharedDataService.deleteOpenAIKey().subscribe(() => {
       this.token = '';
     });
@@ -275,20 +255,16 @@ export class AppComponent implements OnInit {
 
   private handleAddMessageError(err: any): void {
     if (err.status === 401 || err.status === 500) {
-      console.log('session expired?');
-      // Unauthorized error
       this.tryRefreshToken().then((success) => {
         if (success) {
           // Retry the failed request or inform the user to try again
         } else {
-          // Refresh token failed; log the user out
           alert('Your session has expired. Please log in again.');
           this.authService.logout();
           this.router.navigate(['/login']);
         }
       });
     } else {
-      // General error
       alert('An error occurred while adding the message. Please try again.');
     }
   }
@@ -296,25 +272,21 @@ export class AppComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.authService.refreshToken().subscribe({
         next: (newAccessToken) => {
-          // Update the access token
           resolve(true);
         },
         error: (refreshError) => {
-          // Handle refresh token error
           resolve(false);
         },
       });
     });
   }
   contact() {
-    const email = 'andy@jenkinssd.com'; // Replace with your email address
+    const email = 'andy@jenkinssd.com';
     const subject = 'Sage Page Query';
     const body = 'Hello, I would like to contact you regarding...';
 
-    // Construct the mailto URL
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    // Open the email client
     window.location.href = mailtoLink;
   }
 
